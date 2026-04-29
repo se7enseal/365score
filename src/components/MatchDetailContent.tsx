@@ -425,119 +425,163 @@ export default function MatchDetailContent({ match }: { match: Match }) {
           <div className="space-y-6">
             <h3 className="text-lg font-semibold text-gray-900">赔率数据</h3>
             
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-500">博彩公司</th>
-                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-500">初始 {match.homeTeam}</th>
-                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-500">即时 {match.homeTeam}</th>
-                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-500">初始 平局</th>
-                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-500">即时 平局</th>
-                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-500">初始 {match.awayTeam}</th>
-                    <th className="px-4 py-3 text-center text-sm font-medium text-gray-500">即时 {match.awayTeam}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {match.odds.bookmakers.map((bookmaker, idx) => (
-                    <tr key={idx} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">{bookmaker.name}</td>
-                      <td className="px-4 py-3 text-center">
-                        <span className="text-sm font-medium text-gray-600">{bookmaker.initial.home}</span>
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          <span className={`text-sm font-medium ${
-                            bookmaker.current.home > bookmaker.initial.home ? 'text-red-600' : 
-                            bookmaker.current.home < bookmaker.initial.home ? 'text-green-600' : 'text-gray-600'
-                          }`}>
-                            {bookmaker.current.home}
-                          </span>
-                          {bookmaker.current.home > bookmaker.initial.home && (
-                            <span className="text-red-500 text-xs">↑</span>
-                          )}
-                          {bookmaker.current.home < bookmaker.initial.home && (
-                            <span className="text-green-500 text-xs">↓</span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <span className="text-sm font-medium text-gray-600">{bookmaker.initial.draw}</span>
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          <span className={`text-sm font-medium ${
-                            bookmaker.current.draw > bookmaker.initial.draw ? 'text-red-600' : 
-                            bookmaker.current.draw < bookmaker.initial.draw ? 'text-green-600' : 'text-gray-600'
-                          }`}>
-                            {bookmaker.current.draw}
-                          </span>
-                          {bookmaker.current.draw > bookmaker.initial.draw && (
-                            <span className="text-red-500 text-xs">↑</span>
-                          )}
-                          {bookmaker.current.draw < bookmaker.initial.draw && (
-                            <span className="text-green-500 text-xs">↓</span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <span className="text-sm font-medium text-gray-600">{bookmaker.initial.away}</span>
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          <span className={`text-sm font-medium ${
-                            bookmaker.current.away > bookmaker.initial.away ? 'text-red-600' : 
-                            bookmaker.current.away < bookmaker.initial.away ? 'text-green-600' : 'text-gray-600'
-                          }`}>
-                            {bookmaker.current.away}
-                          </span>
-                          {bookmaker.current.away > bookmaker.initial.away && (
-                            <span className="text-red-500 text-xs">↑</span>
-                          )}
-                          {bookmaker.current.away < bookmaker.initial.away && (
-                            <span className="text-green-500 text-xs">↓</span>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="bg-gray-50 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-4">
+                  <span className="text-gray-700 font-medium">显示选择</span>
+                  <span className="text-blue-600 text-sm cursor-pointer hover:underline">反选</span>
+                  <span className="text-gray-400 text-sm">恢复默认</span>
+                  <span className="text-gray-400 text-sm">共{match.odds.bookmakers.length}家公司</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="showInitial" defaultChecked className="w-4 h-4 text-blue-600 rounded" />
+                  <label htmlFor="showInitial" className="text-sm text-gray-600">显示初盘</label>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-12 gap-2 text-center text-sm font-medium text-gray-500 mb-3">
+                <div className="col-span-2">序号</div>
+                <div className="col-span-2">赔率公司</div>
+                <div className="col-span-2 text-red-500">胜</div>
+                <div className="col-span-2 text-gray-600">平</div>
+                <div className="col-span-2 text-green-500">负</div>
+                <div className="col-span-2">定制</div>
+              </div>
+              
+              {match.odds.bookmakers.map((bookmaker, idx) => (
+                <div key={idx} className="grid grid-cols-12 gap-2 items-center py-3 border-b border-gray-100 last:border-0">
+                  <div className="col-span-2">
+                    <input type="checkbox" className="w-4 h-4 text-blue-600 rounded" />
+                    <span className="ml-1 text-sm text-gray-400">{idx + 1}</span>
+                  </div>
+                  <div className="col-span-2">
+                    <span className="text-sm font-medium text-gray-900">{bookmaker.name}</span>
+                    <span className="ml-1 text-xs text-red-500">主</span>
+                  </div>
+                  <div className="col-span-2 text-center">
+                    <div className="text-sm text-gray-600 mb-1">{bookmaker.current.home}</div>
+                    <div className={`text-sm ${bookmaker.current.home < bookmaker.initial.home ? 'bg-green-100 text-green-700' : bookmaker.current.home > bookmaker.initial.home ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600'} px-1 rounded`}>
+                      {bookmaker.initial.home}
+                    </div>
+                  </div>
+                  <div className="col-span-2 text-center">
+                    <div className="text-sm text-gray-600 mb-1">{bookmaker.current.draw}</div>
+                    <div className={`text-sm ${bookmaker.current.draw < bookmaker.initial.draw ? 'bg-green-100 text-green-700' : bookmaker.current.draw > bookmaker.initial.draw ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600'} px-1 rounded`}>
+                      {bookmaker.initial.draw}
+                    </div>
+                  </div>
+                  <div className="col-span-2 text-center">
+                    <div className="text-sm text-gray-600 mb-1">{bookmaker.current.away}</div>
+                    <div className={`text-sm ${bookmaker.current.away < bookmaker.initial.away ? 'bg-green-100 text-green-700' : bookmaker.current.away > bookmaker.initial.away ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-600'} px-1 rounded`}>
+                      {bookmaker.initial.away}
+                    </div>
+                  </div>
+                  <div className="col-span-2 text-center">
+                    <span className="text-gray-400 text-xs">定制</span>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-purple-50 rounded-xl p-6">
-                <h4 className="text-md font-semibold text-purple-900 mb-4">初始离散值</h4>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{match.homeTeam}</span>
-                    <span className="text-xl font-bold text-purple-600">{match.odds.initialDiscrete.home}%</span>
+            <div className="bg-gray-50 rounded-xl p-4">
+              <div className="grid grid-cols-12 gap-4 mb-4">
+                <div className="col-span-4">
+                  <div className="flex items-center gap-2">
+                    <input type="checkbox" className="w-4 h-4 text-blue-600 rounded" />
+                    <span className="text-sm text-gray-600">国家</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">平局</span>
-                    <span className="text-xl font-bold text-purple-600">{match.odds.initialDiscrete.draw}%</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{match.awayTeam}</span>
-                    <span className="text-xl font-bold text-purple-600">{match.odds.initialDiscrete.away}%</span>
+                </div>
+                <div className="col-span-4">
+                  <div className="flex items-center gap-2">
+                    <input type="checkbox" id="headTail" defaultChecked className="w-4 h-4 text-blue-600 rounded" />
+                    <label htmlFor="headTail" className="text-sm text-gray-600">头尾跟随</label>
                   </div>
                 </div>
               </div>
-
-              <div className="bg-orange-50 rounded-xl p-6">
-                <h4 className="text-md font-semibold text-orange-900 mb-4">最终离散值</h4>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{match.homeTeam}</span>
-                    <span className="text-xl font-bold text-orange-600">{match.odds.finalDiscrete.home}%</span>
+              
+              <div className="grid grid-cols-12 gap-2 text-center mb-4">
+                <div className="col-span-4">
+                  <div className="text-sm text-gray-500 mb-1">平均值</div>
+                  <div className="text-sm font-medium text-gray-700">
+                    {(match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.home, 0) / match.odds.bookmakers.length).toFixed(2)}
+                    <span className="mx-2">|</span>
+                    {(match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.draw, 0) / match.odds.bookmakers.length).toFixed(2)}
+                    <span className="mx-2">|</span>
+                    {(match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.away, 0) / match.odds.bookmakers.length).toFixed(2)}
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">平局</span>
-                    <span className="text-xl font-bold text-orange-600">{match.odds.finalDiscrete.draw}%</span>
+                </div>
+                <div className="col-span-4">
+                  <div className="text-sm text-gray-500 mb-1">初盘均值</div>
+                  <div className="text-sm font-medium text-gray-700">
+                    {(match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.home, 0) / match.odds.bookmakers.length).toFixed(2)}
+                    <span className="mx-2">|</span>
+                    {(match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.draw, 0) / match.odds.bookmakers.length).toFixed(2)}
+                    <span className="mx-2">|</span>
+                    {(match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.away, 0) / match.odds.bookmakers.length).toFixed(2)}
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600">{match.awayTeam}</span>
-                    <span className="text-xl font-bold text-orange-600">{match.odds.finalDiscrete.away}%</span>
+                </div>
+                <div className="col-span-4">
+                  <div className="text-sm text-gray-500 mb-1">赔付率</div>
+                  <div className="text-sm font-medium text-gray-700">
+                    {(() => {
+                      const avgH = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.home, 0) / match.odds.bookmakers.length;
+                      const avgD = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.draw, 0) / match.odds.bookmakers.length;
+                      const avgA = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.away, 0) / match.odds.bookmakers.length;
+                      return ((1 / avgH + 1 / avgD + 1 / avgA) * 100).toFixed(1) + '%';
+                    })()}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-12 gap-2 text-center">
+                <div className="col-span-4">
+                  <div className="text-sm text-gray-500 mb-1">即时离散</div>
+                  <div className="text-sm font-bold text-red-600">
+                    {(() => {
+                      const avgHome = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.home, 0) / match.odds.bookmakers.length;
+                      const varianceHome = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.current.home - avgHome, 2), 0) / match.odds.bookmakers.length;
+                      return Math.sqrt(varianceHome).toFixed(2);
+                    })()}
+                    <span className="mx-2">|</span>
+                    {(() => {
+                      const avgDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.draw, 0) / match.odds.bookmakers.length;
+                      const varianceDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.current.draw - avgDraw, 2), 0) / match.odds.bookmakers.length;
+                      return Math.sqrt(varianceDraw).toFixed(2);
+                    })()}
+                    <span className="mx-2">|</span>
+                    {(() => {
+                      const avgAway = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.away, 0) / match.odds.bookmakers.length;
+                      const varianceAway = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.current.away - avgAway, 2), 0) / match.odds.bookmakers.length;
+                      return Math.sqrt(varianceAway).toFixed(2);
+                    })()}
+                  </div>
+                </div>
+                <div className="col-span-4">
+                  <div className="text-sm text-gray-500 mb-1">初盘离散</div>
+                  <div className="text-sm font-bold text-blue-600">
+                    {(() => {
+                      const avgHome = match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.home, 0) / match.odds.bookmakers.length;
+                      const varianceHome = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.initial.home - avgHome, 2), 0) / match.odds.bookmakers.length;
+                      return Math.sqrt(varianceHome).toFixed(2);
+                    })()}
+                    <span className="mx-2">|</span>
+                    {(() => {
+                      const avgDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.draw, 0) / match.odds.bookmakers.length;
+                      const varianceDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.initial.draw - avgDraw, 2), 0) / match.odds.bookmakers.length;
+                      return Math.sqrt(varianceDraw).toFixed(2);
+                    })()}
+                    <span className="mx-2">|</span>
+                    {(() => {
+                      const avgAway = match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.away, 0) / match.odds.bookmakers.length;
+                      const varianceAway = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.initial.away - avgAway, 2), 0) / match.odds.bookmakers.length;
+                      return Math.sqrt(varianceAway).toFixed(2);
+                    })()}
+                  </div>
+                </div>
+                <div className="col-span-4">
+                  <div className="text-sm text-gray-500 mb-1">凯利指数</div>
+                  <div className="text-sm font-medium text-gray-700">
+                    -- <span className="mx-2">|</span> -- <span className="mx-2">|</span> --
                   </div>
                 </div>
               </div>
