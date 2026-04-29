@@ -2,7 +2,7 @@ import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
 
 export async function generateStaticParams() {
-  const leagues = ['英超', '西甲', '意甲', '德甲', '法甲', '欧冠', '欧罗巴', '欧协联'];
+  const leagues = ['英超', '西甲', '意甲', '德甲', '法甲', '欧冠', '欧罗巴', '欧协联', '足总杯', '国王杯', '德国杯', '意大利杯'];
   return leagues.map((name) => ({ name }));
 }
 
@@ -318,6 +318,124 @@ const leagueData: Record<string, {
     standings: [],
     teamsList: [],
     rules: '欧联杯联赛共有32支球队进入小组赛阶段，分为8个小组，每组4支球队进行双循环比赛。小组前两名晋级淘汰赛阶段，淘汰赛采用主客场两回合制。决赛为单场决胜，在中立场地进行。',
+  },
+  '欧协联': {
+    name: '欧足联欧洲协会联赛',
+    country: '欧洲',
+    founded: '2021年',
+    teams: 32,
+    description: '欧足联欧洲协会联赛（简称欧协联）是欧洲足球协会联盟主办的第三级欧洲俱乐部赛事，成立于2021年，为更多欧洲俱乐部提供了参加欧洲赛事的机会。欧协联冠军可获得下赛季欧联杯资格。',
+    champions: [
+      { year: '2023-24', team: '阿斯顿维拉' },
+      { year: '2022-23', team: '西汉姆联' },
+      { year: '2021-22', team: '罗马' },
+    ],
+    topScorers: [
+      { name: '沃特金斯', team: '阿斯顿维拉', goals: 11, assists: 3 },
+      { name: '安东尼奥', team: '西汉姆联', goals: 9, assists: 2 },
+      { name: '佩德罗', team: '罗马', goals: 8, assists: 4 },
+      { name: '亚伯拉罕', team: '罗马', goals: 7, assists: 2 },
+      { name: '帕耶', team: '马赛', goals: 6, assists: 3 },
+    ],
+    standings: [],
+    teamsList: [],
+    rules: '欧协联共有32支球队进入小组赛阶段，分为8个小组，每组4支球队进行双循环比赛。小组第一和三个成绩最好的小组第二晋级淘汰赛阶段。淘汰赛采用主客场两回合制，决赛为单场决胜。',
+  },
+  '足总杯': {
+    name: '英格兰足总杯',
+    country: '英格兰',
+    founded: '1871年',
+    teams: 64,
+    description: '英格兰足总杯是世界上最古老的足球杯赛，成立于1871年。足总杯面向英格兰各级别联赛的俱乐部开放，是英格兰足球最重要的杯赛之一。',
+    champions: [
+      { year: '2023-24', team: '曼城' },
+      { year: '2022-23', team: '曼城' },
+      { year: '2021-22', team: '利物浦' },
+      { year: '2020-21', team: '莱斯特城' },
+      { year: '2019-20', team: '阿森纳' },
+    ],
+    topScorers: [
+      { name: '哈兰德', team: '曼城', goals: 8, assists: 2 },
+      { name: '萨拉赫', team: '利物浦', goals: 6, assists: 3 },
+      { name: '萨卡', team: '阿森纳', goals: 5, assists: 2 },
+      { name: '凯恩', team: '热刺', goals: 5, assists: 1 },
+      { name: '马内', team: '利物浦', goals: 4, assists: 2 },
+    ],
+    standings: [],
+    teamsList: [],
+    rules: '足总杯采用单场淘汰制，共分为八轮。前两轮为资格赛，第三轮到第六轮为主客场抽签决定，半决赛在温布利球场进行，决赛也在温布利球场举行。冠军获得下赛季欧联杯资格。',
+  },
+  '国王杯': {
+    name: '西班牙国王杯',
+    country: '西班牙',
+    founded: '1902年',
+    teams: 82,
+    description: '西班牙国王杯是西班牙足球最重要的杯赛之一，成立于1902年。国王杯面向西班牙各级别联赛的俱乐部开放，是西班牙足球传统赛事。',
+    champions: [
+      { year: '2023-24', team: '巴塞罗那' },
+      { year: '2022-23', team: '巴塞罗那' },
+      { year: '2021-22', team: '皇家贝蒂斯' },
+      { year: '2020-21', team: '巴塞罗那' },
+      { year: '2019-20', team: '皇家社会' },
+    ],
+    topScorers: [
+      { name: '莱万多夫斯基', team: '巴塞罗那', goals: 7, assists: 2 },
+      { name: '本泽马', team: '皇家马德里', goals: 6, assists: 3 },
+      { name: '维尼修斯', team: '皇家马德里', goals: 5, assists: 2 },
+      { name: '费兰·托雷斯', team: '巴塞罗那', goals: 5, assists: 1 },
+      { name: '伊格莱西亚斯', team: '贝蒂斯', goals: 4, assists: 2 },
+    ],
+    standings: [],
+    teamsList: [],
+    rules: '国王杯采用单场淘汰制，低级别球队享有主场优势。半决赛为两回合制，决赛为单场决胜。冠军获得下赛季欧联杯资格。',
+  },
+  '德国杯': {
+    name: '德国杯',
+    country: '德国',
+    founded: '1952年',
+    teams: 64,
+    description: '德国杯是德国足球最重要的杯赛，成立于1952年。德国杯面向德国各级别联赛的俱乐部开放，是德国足球传统赛事。',
+    champions: [
+      { year: '2023-24', team: '勒沃库森' },
+      { year: '2022-23', team: '莱比锡' },
+      { year: '2021-22', team: '莱比锡' },
+      { year: '2020-21', team: '多特蒙德' },
+      { year: '2019-20', team: '拜仁慕尼黑' },
+    ],
+    topScorers: [
+      { name: '维尔茨', team: '勒沃库森', goals: 6, assists: 3 },
+      { name: '恩昆库', team: '莱比锡', goals: 5, assists: 2 },
+      { name: '穆勒', team: '拜仁慕尼黑', goals: 5, assists: 4 },
+      { name: '哈兰德', team: '多特蒙德', goals: 4, assists: 1 },
+      { name: '希克', team: '勒沃库森', goals: 4, assists: 2 },
+    ],
+    standings: [],
+    teamsList: [],
+    rules: '德国杯采用单场淘汰制，低级别球队享有主场优势。决赛在柏林奥林匹克球场举行。冠军获得下赛季欧联杯资格。',
+  },
+  '意大利杯': {
+    name: '意大利杯',
+    country: '意大利',
+    founded: '1922年',
+    teams: 44,
+    description: '意大利杯是意大利足球最重要的杯赛，成立于1922年。意大利杯面向意大利各级别联赛的俱乐部开放，是意大利足球传统赛事。',
+    champions: [
+      { year: '2023-24', team: '国际米兰' },
+      { year: '2022-23', team: '国际米兰' },
+      { year: '2021-22', team: '佛罗伦萨' },
+      { year: '2020-21', team: '那不勒斯' },
+      { year: '2019-20', team: '那不勒斯' },
+    ],
+    topScorers: [
+      { name: '劳塔罗', team: '国际米兰', goals: 7, assists: 2 },
+      { name: '奥斯梅恩', team: '那不勒斯', goals: 6, assists: 1 },
+      { name: '弗拉霍维奇', team: '尤文图斯', goals: 5, assists: 2 },
+      { name: '吉鲁', team: 'AC米兰', goals: 5, assists: 1 },
+      { name: '贝拉尔迪', team: '萨索洛', goals: 4, assists: 3 },
+    ],
+    standings: [],
+    teamsList: [],
+    rules: '意大利杯采用单场淘汰制，部分轮次为两回合制。决赛在罗马奥林匹克球场举行。冠军获得下赛季欧联杯资格。',
   },
 };
 
