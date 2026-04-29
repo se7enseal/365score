@@ -475,23 +475,23 @@ export default function MatchDetailContent({ match }: { match: Match }) {
               ))}
             </div>
 
-            <div className="bg-gray-50 rounded-xl p-4">
-              <div className="grid grid-cols-12 gap-4 text-center">
-                <div className="col-span-6">
+            <div className="bg-gray-100 rounded-xl py-4">
+              <div className="flex justify-around">
+                <div className="text-center">
                   <div className="text-sm text-gray-500 mb-2">即时离散</div>
-                  <div className="text-lg font-bold text-red-600">
+                  <div className="text-xl font-bold text-red-600">
                     {(() => {
                       const avgHome = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.home, 0) / match.odds.bookmakers.length;
                       const varianceHome = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.current.home - avgHome, 2), 0) / match.odds.bookmakers.length;
                       return Math.sqrt(varianceHome).toFixed(2);
                     })()}
-                    <span className="mx-3 text-gray-400">|</span>
+                    <span className="mx-2 text-gray-400">|</span>
                     {(() => {
                       const avgDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.draw, 0) / match.odds.bookmakers.length;
                       const varianceDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.current.draw - avgDraw, 2), 0) / match.odds.bookmakers.length;
                       return Math.sqrt(varianceDraw).toFixed(2);
                     })()}
-                    <span className="mx-3 text-gray-400">|</span>
+                    <span className="mx-2 text-gray-400">|</span>
                     {(() => {
                       const avgAway = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.away, 0) / match.odds.bookmakers.length;
                       const varianceAway = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.current.away - avgAway, 2), 0) / match.odds.bookmakers.length;
@@ -499,21 +499,21 @@ export default function MatchDetailContent({ match }: { match: Match }) {
                     })()}
                   </div>
                 </div>
-                <div className="col-span-6">
+                <div className="text-center">
                   <div className="text-sm text-gray-500 mb-2">初始离散</div>
-                  <div className="text-lg font-bold text-blue-600">
+                  <div className="text-xl font-bold text-blue-600">
                     {(() => {
                       const avgHome = match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.home, 0) / match.odds.bookmakers.length;
                       const varianceHome = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.initial.home - avgHome, 2), 0) / match.odds.bookmakers.length;
                       return Math.sqrt(varianceHome).toFixed(2);
                     })()}
-                    <span className="mx-3 text-gray-400">|</span>
+                    <span className="mx-2 text-gray-400">|</span>
                     {(() => {
                       const avgDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.draw, 0) / match.odds.bookmakers.length;
                       const varianceDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.initial.draw - avgDraw, 2), 0) / match.odds.bookmakers.length;
                       return Math.sqrt(varianceDraw).toFixed(2);
                     })()}
-                    <span className="mx-3 text-gray-400">|</span>
+                    <span className="mx-2 text-gray-400">|</span>
                     {(() => {
                       const avgAway = match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.away, 0) / match.odds.bookmakers.length;
                       const varianceAway = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.initial.away - avgAway, 2), 0) / match.odds.bookmakers.length;
@@ -526,28 +526,10 @@ export default function MatchDetailContent({ match }: { match: Match }) {
 
             <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
               <h4 className="text-sm font-semibold text-blue-900 mb-3">📊 离散值使用指南</h4>
-              <div className="space-y-3 text-sm text-gray-700">
-                <div className="flex items-start gap-2">
-                  <span className="text-green-500 font-bold">●</span>
-                  <div>
-                    <span className="font-medium text-green-700">低离散（各家高度一致）：</span>
-                    <p className="mt-1">如果离散值远低于历史平均水平，说明机构对该结果达成了共识，通常正路出的概率大。</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-red-500 font-bold">●</span>
-                  <div>
-                    <span className="font-medium text-red-700">高离散（分歧巨大）：</span>
-                    <p className="mt-1">如果有几家巨头（如平博或威廉希尔）给出的赔率远高于平均值，而其他家较低，可能预示着热门方不稳，存在诱导可能。</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-blue-500 font-bold">●</span>
-                  <div>
-                    <span className="font-medium text-blue-700">离散对比：</span>
-                    <p className="mt-1">横向对比"胜、平、负"三项的离散值。通常情况下，离散值最小的那一项，最可能是博彩公司真实看好的方向。</p>
-                  </div>
-                </div>
+              <div className="space-y-2 text-sm text-gray-700">
+                <div><span className="font-medium text-green-700">● 低离散（各家高度一致）：</span>如果离散值远低于历史平均水平，说明机构对该结果达成了共识，通常正路出的概率大。</div>
+                <div><span className="font-medium text-red-700">● 高离散（分歧巨大）：</span>如果有几家巨头（如平博或威廉希尔）给出的赔率远高于平均值，而其他家较低，可能预示着热门方不稳，存在诱导可能。</div>
+                <div><span className="font-medium text-blue-700">● 离散对比：</span>横向对比"胜、平、负"三项的离散值。通常情况下，离散值最小的那一项，最可能是博彩公司真实看好的方向。</div>
               </div>
             </div>
           </div>
