@@ -63,27 +63,27 @@ export default function MainContent() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-gray-800 rounded-xl p-4">
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-white font-semibold flex items-center gap-2">
+            <h2 className="text-gray-900 font-semibold flex items-center gap-2">
               <span>📅</span> 今日赛事
             </h2>
-            <a href="/calendar" className="text-blue-400 hover:text-blue-300 text-sm">
+            <a href="/calendar" className="text-blue-600 hover:text-blue-700 text-sm">
               查看全部 →
             </a>
           </div>
           <div className="space-y-3">
             {upcomingMatches.map((match) => (
-              <div key={match.id} className="bg-gray-700/50 rounded-lg p-3 hover:bg-gray-700 transition-colors cursor-pointer">
+              <div key={match.id} className="bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors cursor-pointer">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="text-white font-medium">{match.home}</span>
-                    <span className="text-gray-500">VS</span>
-                    <span className="text-white font-medium">{match.away}</span>
+                    <span className="text-gray-900 font-medium">{match.home}</span>
+                    <span className="text-gray-400">VS</span>
+                    <span className="text-gray-900 font-medium">{match.away}</span>
                   </div>
                   <div className="text-right">
-                    <div className="text-gray-400 text-xs">{match.league}</div>
-                    <div className="text-white text-sm font-medium">{match.time}</div>
+                    <div className="text-gray-500 text-xs">{match.league}</div>
+                    <div className="text-gray-900 text-sm font-medium">{match.time}</div>
                   </div>
                 </div>
               </div>
@@ -91,32 +91,32 @@ export default function MainContent() {
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-xl p-4">
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-white font-semibold flex items-center gap-2">
+            <h2 className="text-gray-900 font-semibold flex items-center gap-2">
               <span>🤖</span> AI预测
             </h2>
-            <a href="/predictions" className="text-blue-400 hover:text-blue-300 text-sm">
+            <a href="/predictions" className="text-blue-600 hover:text-blue-700 text-sm">
               查看全部 →
             </a>
           </div>
           <div className="space-y-3">
             {aiPredictions.map((prediction, idx) => (
-              <div key={idx} className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-lg p-3">
+              <div key={idx} className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-3">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-white text-sm font-medium">{prediction.match}</span>
-                  <span className={`px-2 py-0.5 rounded text-xs font-bold ${prediction.confidence > 60 ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                  <span className="text-gray-900 text-sm font-medium">{prediction.match}</span>
+                  <span className={`px-2 py-0.5 rounded text-xs font-bold ${prediction.confidence > 60 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
                     {prediction.confidence}%
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-400 text-xs">预测:</span>
-                    <span className="text-white font-semibold">{prediction.prediction}</span>
+                    <span className="text-gray-500 text-xs">预测:</span>
+                    <span className="text-gray-900 font-semibold">{prediction.prediction}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-400 text-xs">赔率:</span>
-                    <span className="text-yellow-400 font-bold">{prediction.odds}</span>
+                    <span className="text-gray-500 text-xs">赔率:</span>
+                    <span className="text-orange-600 font-bold">{prediction.odds}</span>
                   </div>
                 </div>
               </div>
@@ -125,23 +125,23 @@ export default function MainContent() {
         </div>
       </div>
 
-      <div className="bg-gray-800 rounded-xl p-4">
+      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-white font-semibold flex items-center gap-2">
+          <h2 className="text-gray-900 font-semibold flex items-center gap-2">
             <span>📰</span> 最新资讯
           </h2>
-          <a href="/news" className="text-blue-400 hover:text-blue-300 text-sm">
+          <a href="/news" className="text-blue-600 hover:text-blue-700 text-sm">
             查看全部 →
           </a>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {newsHeadlines.map((news) => (
-            <div key={news.id} className="bg-gray-700/50 rounded-lg p-3 hover:bg-gray-700 transition-colors cursor-pointer">
+            <div key={news.id} className="bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors cursor-pointer">
               <div className="flex items-center gap-2 mb-2">
-                <span className="bg-blue-600 text-white text-xs px-2 py-0.5 rounded">{news.category}</span>
-                <span className="text-gray-500 text-xs">{news.time}</span>
+                <span className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded">{news.category}</span>
+                <span className="text-gray-400 text-xs">{news.time}</span>
               </div>
-              <h3 className="text-white text-sm font-medium line-clamp-2">{news.title}</h3>
+              <h3 className="text-gray-900 text-sm font-medium line-clamp-2">{news.title}</h3>
             </div>
           ))}
         </div>

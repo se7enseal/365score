@@ -23,73 +23,73 @@ export default function RightSidebar() {
 
   return (
     <aside className="w-64 flex-shrink-0 space-y-4">
-      <div className="bg-gray-800 rounded-xl p-4">
-        <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
-          <span className="text-red-400 animate-pulse">⚽</span> 实时比分
+      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+        <h3 className="text-gray-900 font-semibold mb-3 flex items-center gap-2">
+          <span className="text-red-500">⚽</span> 实时比分
         </h3>
         <div className="space-y-2">
           {liveScores.map((match) => (
-            <div key={match.id} className="bg-gray-700/50 rounded-lg p-2 hover:bg-gray-700 transition-colors cursor-pointer">
-              <div className="flex items-center justify-between text-xs text-gray-400 mb-1">
-                <span className="text-red-400 font-medium">{match.minute}</span>
+            <div key={match.id} className="bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition-colors cursor-pointer">
+              <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                <span className="text-red-600 font-medium">{match.minute}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-white text-xs font-medium">{match.home}</span>
+                <span className="text-gray-900 text-xs font-medium">{match.home}</span>
                 <div className="flex items-center gap-1">
-                  <span className="text-white font-bold">{match.homeScore}</span>
-                  <span className="text-gray-500">:</span>
-                  <span className="text-white font-bold">{match.awayScore}</span>
+                  <span className="text-gray-900 font-bold">{match.homeScore}</span>
+                  <span className="text-gray-400">:</span>
+                  <span className="text-gray-900 font-bold">{match.awayScore}</span>
                 </div>
-                <span className="text-white text-xs font-medium">{match.away}</span>
+                <span className="text-gray-900 text-xs font-medium">{match.away}</span>
               </div>
             </div>
           ))}
         </div>
-        <button className="w-full mt-3 text-blue-400 hover:text-blue-300 text-xs font-medium">
+        <button className="w-full mt-3 text-blue-600 hover:text-blue-700 text-xs font-medium">
           查看全部 →
         </button>
       </div>
 
-      <div className="bg-gray-800 rounded-xl p-4">
-        <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
-          <span className="text-yellow-400">🏆</span> 英超积分榜
+      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+        <h3 className="text-gray-900 font-semibold mb-3 flex items-center gap-2">
+          <span className="text-yellow-500">🏆</span> 英超积分榜
         </h3>
         <div className="space-y-1">
           {standings.map((team) => (
-            <div key={team.rank} className="flex items-center gap-2 py-1 hover:bg-gray-700/50 rounded px-1">
-              <span className={`w-6 text-center text-xs font-bold ${team.rank <= 3 ? 'text-yellow-400' : 'text-gray-400'}`}>
+            <div key={team.rank} className="flex items-center gap-2 py-1 hover:bg-gray-50 rounded px-1">
+              <span className={`w-6 text-center text-xs font-bold ${team.rank <= 3 ? 'text-yellow-600' : 'text-gray-400'}`}>
                 {team.rank}
               </span>
-              <span className="flex-1 text-white text-sm">{team.team}</span>
-              <span className="text-gray-400 text-xs">{team.points}分</span>
-              <span className={`text-xs ${team.trend === 'up' ? 'text-green-400' : team.trend === 'down' ? 'text-red-400' : 'text-gray-500'}`}>
+              <span className="flex-1 text-gray-900 text-sm">{team.team}</span>
+              <span className="text-gray-500 text-xs">{team.points}分</span>
+              <span className={`text-xs ${team.trend === 'up' ? 'text-green-600' : team.trend === 'down' ? 'text-red-600' : 'text-gray-400'}`}>
                 {team.trend === 'up' ? '↑' : team.trend === 'down' ? '↓' : '→'}
               </span>
             </div>
           ))}
         </div>
-        <button className="w-full mt-3 text-blue-400 hover:text-blue-300 text-xs font-medium">
+        <button className="w-full mt-3 text-blue-600 hover:text-blue-700 text-xs font-medium">
           完整积分榜 →
         </button>
       </div>
 
-      <div className="bg-gray-800 rounded-xl p-4">
-        <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
-          <span className="text-green-400">⭐</span> 热门球员
+      <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+        <h3 className="text-gray-900 font-semibold mb-3 flex items-center gap-2">
+          <span className="text-green-500">⭐</span> 热门球员
         </h3>
         <div className="space-y-2">
           {topPlayers.map((player, idx) => (
-            <div key={player.name} className="flex items-center gap-2 bg-gray-700/50 rounded-lg p-2">
+            <div key={player.name} className="flex items-center gap-2 bg-gray-50 rounded-lg p-2">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
                 {idx + 1}
               </div>
               <div className="flex-1">
-                <div className="text-white text-sm font-medium">{player.name}</div>
-                <div className="text-gray-400 text-xs">{player.team}</div>
+                <div className="text-gray-900 text-sm font-medium">{player.name}</div>
+                <div className="text-gray-500 text-xs">{player.team}</div>
               </div>
               <div className="text-right">
-                <div className="text-yellow-400 text-xs font-bold">{player.goals}球</div>
-                <div className="text-blue-400 text-xs">{player.assists}助</div>
+                <div className="text-orange-600 text-xs font-bold">{player.goals}球</div>
+                <div className="text-blue-600 text-xs">{player.assists}助</div>
               </div>
             </div>
           ))}
