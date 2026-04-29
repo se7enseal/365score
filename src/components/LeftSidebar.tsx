@@ -13,7 +13,6 @@ export default function LeftSidebar() {
     { name: '法甲', matches: 7, icon: '🇫🇷' },
     { name: '欧冠', matches: 4, icon: '⭐' },
     { name: '欧罗巴', matches: 6, icon: '🥈' },
-    { name: '欧协联', matches: 5, icon: '🥉' },
   ];
 
   const quickLinks = [
@@ -64,6 +63,12 @@ export default function LeftSidebar() {
               <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{league.matches}</span>
             </a>
           ))}
+          <a
+            href="/leagues"
+            className="flex items-center justify-center text-blue-600 hover:text-blue-700 transition-colors py-2 px-3 rounded-lg hover:bg-gray-50 text-sm font-medium"
+          >
+            更多联赛 →
+          </a>
         </div>
       </div>
 
