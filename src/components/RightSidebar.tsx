@@ -85,9 +85,9 @@ export default function RightSidebar() {
             </div>
           ))}
         </div>
-        <button className="w-full mt-3 text-red-600 hover:text-red-700 text-xs font-medium">
+        <a href="/live" className="block w-full mt-3 text-center text-red-600 hover:text-red-700 text-xs font-medium">
           查看全部 →
-        </button>
+        </a>
       </div>
 
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
