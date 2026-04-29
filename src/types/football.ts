@@ -89,6 +89,23 @@ export interface Odds {
   lastUpdate: string;
 }
 
+export interface MatchStats {
+  possession: number;
+  corners: number;
+  redCards: number;
+  yellowCards: number;
+  shots: number;
+  shotsOnTarget: number;
+  penalties: number;
+  attacks: number;
+  dangerousAttacks: number;
+}
+
+export interface MatchStatsData {
+  home: MatchStats;
+  away: MatchStats;
+}
+
 export interface Match {
   id: string;
   date: string;
@@ -107,6 +124,7 @@ export interface Match {
   recentMatches: RecentMatches;
   headToHead: HeadToHead[];
   odds: Odds;
+  stats?: MatchStatsData;
 }
 
 export type MatchStatus = 
