@@ -37,6 +37,8 @@ interface Match {
 
 export default function MatchDetailContent({ match }: { match: Match }) {
   const [activeTab, setActiveTab] = useState<'overview' | 'lineup' | 'events' | 'headToHead' | 'recent' | 'odds'>('overview');
+  const [showOddsModal, setShowOddsModal] = useState(false);
+  const [selectedMatch, setSelectedMatch] = useState<{ homeTeam: string; awayTeam: string; homeScore: number; awayScore: number } | null>(null);
 
   const tabs = [
     { id: 'overview' as const, label: '比赛概览' },
@@ -337,7 +339,7 @@ export default function MatchDetailContent({ match }: { match: Match }) {
             <div className="bg-gray-50 rounded-xl p-4">
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-blue-600">
+                  <div className="text-2xl font-bold text-red-600">
                     {match.headToHead.filter(h => h.home === match.homeTeam ? h.homeScore > h.awayScore : h.awayScore > h.homeScore).length}
                   </div>
                   <div className="text-sm text-gray-500">胜</div>
@@ -349,7 +351,7 @@ export default function MatchDetailContent({ match }: { match: Match }) {
                   <div className="text-sm text-gray-500">平</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-red-600">
+                  <div className="text-2xl font-bold text-blue-600">
                     {match.headToHead.filter(h => h.home === match.homeTeam ? h.homeScore < h.awayScore : h.awayScore < h.homeScore).length}
                   </div>
                   <div className="text-sm text-gray-500">负</div>
@@ -373,21 +375,26 @@ export default function MatchDetailContent({ match }: { match: Match }) {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {match.headToHead.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm text-gray-500">{item.date}</td>
-                      <td className="px-4 py-3">
-                        <span className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">{item.league}</span>
-                      </td>
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">{item.home}</td>
-                      <td className="px-4 py-3 text-center">
-                        <span className={`font-bold ${item.homeScore > item.awayScore ? 'text-blue-600' : item.homeScore < item.awayScore ? 'text-red-600' : 'text-gray-600'}`}>
-                          {item.homeScore} - {item.awayScore}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">{item.away}</td>
-                    </tr>
-                  ))}
+                  {match.headToHead.map((item, idx) => {
+                    const isHomeWin = item.home === match.homeTeam ? item.homeScore > item.awayScore : item.awayScore > item.homeScore;
+                    const isDraw = item.homeScore === item.awayScore;
+                    const scoreColor = isHomeWin ? 'text-red-600' : isDraw ? 'text-gray-600' : 'text-blue-600';
+                    return (
+                      <tr key={idx} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-sm text-gray-500">{item.date}</td>
+                        <td className="px-4 py-3">
+                          <span className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">{item.league}</span>
+                        </td>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900">{item.home}</td>
+                        <td className="px-4 py-3 text-center">
+                          <span className={`font-bold ${scoreColor}`}>
+                            {item.homeScore} - {item.awayScore}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">{item.away}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -400,26 +407,30 @@ export default function MatchDetailContent({ match }: { match: Match }) {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">{match.homeTeam} 近期战绩</h3>
                 <div className="flex items-center gap-4">
-                  <span className="text-green-600 font-bold">{match.homeRecentMatches.filter(m => m.result === 'W').length}胜</span>
+                  <span className="text-red-600 font-bold">{match.homeRecentMatches.filter(m => m.result === 'W').length}胜</span>
                   <span className="text-gray-600 font-bold">{match.homeRecentMatches.filter(m => m.result === 'D').length}平</span>
-                  <span className="text-red-600 font-bold">{match.homeRecentMatches.filter(m => m.result === 'L').length}负</span>
+                  <span className="text-blue-600 font-bold">{match.homeRecentMatches.filter(m => m.result === 'L').length}负</span>
                 </div>
               </div>
               <div className="space-y-2">
                 {match.homeRecentMatches.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                  <div key={idx} className="flex items-center justify-between p-3 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors"
+                    onClick={() => {
+                      setSelectedMatch({ homeTeam: match.homeTeam, awayTeam: item.opponent, homeScore: item.homeScore, awayScore: item.awayScore });
+                      setShowOddsModal(true);
+                    }}>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-gray-500 text-sm">{item.date}</span>
                         <span className="bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded">{item.league}</span>
                       </div>
                       <div className="mt-1 font-medium text-gray-900">
-                        {match.homeTeam} {item.homeScore}-{item.awayScore} {item.opponent}
+                        {match.homeTeam} <span className={`font-bold ${item.result === 'W' ? 'text-red-600' : item.result === 'L' ? 'text-blue-600' : 'text-gray-600'}`}>{item.homeScore}-{item.awayScore}</span> {item.opponent}
                       </div>
                     </div>
                     <span className={`ml-4 font-bold text-lg ${
-                      item.result === 'W' ? 'text-green-600' : 
-                      item.result === 'L' ? 'text-red-600' : 
+                      item.result === 'W' ? 'text-red-600' : 
+                      item.result === 'L' ? 'text-blue-600' : 
                       'text-gray-600'
                     }`}>
                       {item.result === 'W' ? '胜' : item.result === 'L' ? '负' : '平'}
@@ -432,26 +443,30 @@ export default function MatchDetailContent({ match }: { match: Match }) {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-900">{match.awayTeam} 近期战绩</h3>
                 <div className="flex items-center gap-4">
-                  <span className="text-green-600 font-bold">{match.awayRecentMatches.filter(m => m.result === 'W').length}胜</span>
+                  <span className="text-red-600 font-bold">{match.awayRecentMatches.filter(m => m.result === 'W').length}胜</span>
                   <span className="text-gray-600 font-bold">{match.awayRecentMatches.filter(m => m.result === 'D').length}平</span>
-                  <span className="text-red-600 font-bold">{match.awayRecentMatches.filter(m => m.result === 'L').length}负</span>
+                  <span className="text-blue-600 font-bold">{match.awayRecentMatches.filter(m => m.result === 'L').length}负</span>
                 </div>
               </div>
               <div className="space-y-2">
                 {match.awayRecentMatches.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                  <div key={idx} className="flex items-center justify-between p-3 bg-red-50 rounded-lg cursor-pointer hover:bg-red-100 transition-colors"
+                    onClick={() => {
+                      setSelectedMatch({ homeTeam: match.awayTeam, awayTeam: item.opponent, homeScore: item.homeScore, awayScore: item.awayScore });
+                      setShowOddsModal(true);
+                    }}>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <span className="text-gray-500 text-sm">{item.date}</span>
                         <span className="bg-gray-200 text-gray-600 text-xs px-2 py-0.5 rounded">{item.league}</span>
                       </div>
                       <div className="mt-1 font-medium text-gray-900">
-                        {match.awayTeam} {item.homeScore}-{item.awayScore} {item.opponent}
+                        {match.awayTeam} <span className={`font-bold ${item.result === 'W' ? 'text-red-600' : item.result === 'L' ? 'text-blue-600' : 'text-gray-600'}`}>{item.homeScore}-{item.awayScore}</span> {item.opponent}
                       </div>
                     </div>
                     <span className={`ml-4 font-bold text-lg ${
-                      item.result === 'W' ? 'text-green-600' : 
-                      item.result === 'L' ? 'text-red-600' : 
+                      item.result === 'W' ? 'text-red-600' : 
+                      item.result === 'L' ? 'text-blue-600' : 
                       'text-gray-600'
                     }`}>
                       {item.result === 'W' ? '胜' : item.result === 'L' ? '负' : '平'}
@@ -577,6 +592,105 @@ export default function MatchDetailContent({ match }: { match: Match }) {
           </div>
         )}
       </div>
+
+      {showOddsModal && selectedMatch && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowOddsModal(false)}>
+          <div className="bg-white rounded-xl w-full max-w-2xl max-h-[80vh] overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="bg-gray-800 text-white px-6 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <h3 className="text-lg font-semibold">赔率数据</h3>
+                <span className="text-gray-400">{selectedMatch.homeTeam} {selectedMatch.homeScore}-{selectedMatch.awayScore} {selectedMatch.awayTeam}</span>
+              </div>
+              <button onClick={() => setShowOddsModal(false)} className="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)]">
+              <div className="bg-gray-50 rounded-xl overflow-hidden">
+                <div className="grid grid-cols-12 gap-2 bg-gray-100 px-4 py-2 text-center text-sm font-medium text-gray-500">
+                  <div className="col-span-2">序号</div>
+                  <div className="col-span-3">赔率公司</div>
+                  <div className="col-span-2">胜</div>
+                  <div className="col-span-2">平</div>
+                  <div className="col-span-3">负</div>
+                </div>
+                {match.odds.bookmakers.map((bookmaker, idx) => (
+                  <div key={idx} className="grid grid-cols-12 gap-2 px-4 py-2 hover:bg-gray-100">
+                    <div className="col-span-2 text-sm text-gray-500">{idx + 1}</div>
+                    <div className="col-span-3 text-sm font-medium text-gray-900">{bookmaker.name}</div>
+                    <div className="col-span-2 text-center">
+                      <div className={`font-bold ${bookmaker.current.home > bookmaker.initial.home ? 'text-red-600' : bookmaker.current.home < bookmaker.initial.home ? 'text-green-600' : 'text-gray-700'}`}>
+                        {bookmaker.current.home.toFixed(2)}
+                      </div>
+                      <div className="text-xs bg-gray-200 text-gray-600 py-0.5">{bookmaker.initial.home.toFixed(2)}</div>
+                    </div>
+                    <div className="col-span-2 text-center">
+                      <div className={`font-bold ${bookmaker.current.draw > bookmaker.initial.draw ? 'text-red-600' : bookmaker.current.draw < bookmaker.initial.draw ? 'text-green-600' : 'text-gray-700'}`}>
+                        {bookmaker.current.draw.toFixed(2)}
+                      </div>
+                      <div className="text-xs bg-gray-200 text-gray-600 py-0.5">{bookmaker.initial.draw.toFixed(2)}</div>
+                    </div>
+                    <div className="col-span-3 text-center">
+                      <div className={`font-bold ${bookmaker.current.away > bookmaker.initial.away ? 'text-red-600' : bookmaker.current.away < bookmaker.initial.away ? 'text-green-600' : 'text-gray-700'}`}>
+                        {bookmaker.current.away.toFixed(2)}
+                      </div>
+                      <div className="text-xs bg-gray-200 text-gray-600 py-0.5">{bookmaker.initial.away.toFixed(2)}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 bg-gray-100 rounded-xl py-4">
+                <div className="flex justify-around">
+                  <div className="text-center">
+                    <div className="text-sm text-gray-500 mb-2">即时离散</div>
+                    <div className="text-xl font-bold text-red-600">
+                      {(() => {
+                        const avgHome = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.home, 0) / match.odds.bookmakers.length;
+                        const varianceHome = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.current.home - avgHome, 2), 0) / match.odds.bookmakers.length;
+                        return Math.sqrt(varianceHome).toFixed(2);
+                      })()}
+                      <span className="mx-2 text-gray-400">|</span>
+                      {(() => {
+                        const avgDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.draw, 0) / match.odds.bookmakers.length;
+                        const varianceDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.current.draw - avgDraw, 2), 0) / match.odds.bookmakers.length;
+                        return Math.sqrt(varianceDraw).toFixed(2);
+                      })()}
+                      <span className="mx-2 text-gray-400">|</span>
+                      {(() => {
+                        const avgAway = match.odds.bookmakers.reduce((sum: number, b) => sum + b.current.away, 0) / match.odds.bookmakers.length;
+                        const varianceAway = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.current.away - avgAway, 2), 0) / match.odds.bookmakers.length;
+                        return Math.sqrt(varianceAway).toFixed(2);
+                      })()}
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm text-gray-500 mb-2">初始离散</div>
+                    <div className="text-xl font-bold text-blue-600">
+                      {(() => {
+                        const avgHome = match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.home, 0) / match.odds.bookmakers.length;
+                        const varianceHome = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.initial.home - avgHome, 2), 0) / match.odds.bookmakers.length;
+                        return Math.sqrt(varianceHome).toFixed(2);
+                      })()}
+                      <span className="mx-2 text-gray-400">|</span>
+                      {(() => {
+                        const avgDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.draw, 0) / match.odds.bookmakers.length;
+                        const varianceDraw = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.initial.draw - avgDraw, 2), 0) / match.odds.bookmakers.length;
+                        return Math.sqrt(varianceDraw).toFixed(2);
+                      })()}
+                      <span className="mx-2 text-gray-400">|</span>
+                      {(() => {
+                        const avgAway = match.odds.bookmakers.reduce((sum: number, b) => sum + b.initial.away, 0) / match.odds.bookmakers.length;
+                        const varianceAway = match.odds.bookmakers.reduce((sum: number, b) => sum + Math.pow(b.initial.away - avgAway, 2), 0) / match.odds.bookmakers.length;
+                        return Math.sqrt(varianceAway).toFixed(2);
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
