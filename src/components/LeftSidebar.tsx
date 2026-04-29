@@ -46,9 +46,17 @@ export default function LeftSidebar() {
       </div>
 
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-        <h3 className="text-gray-900 font-semibold mb-3 flex items-center gap-2">
-          <span className="text-blue-500">🏟️</span> 联赛导航
-        </h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-gray-900 font-semibold flex items-center gap-2">
+            <span className="text-blue-500">🏟️</span> 联赛导航
+          </h3>
+          <a
+            href="/leagues"
+            className="text-blue-600 hover:text-blue-700 text-xs font-medium"
+          >
+            更多→
+          </a>
+        </div>
         <div className="space-y-2">
           {leagues.map((league) => (
             <a
@@ -63,12 +71,6 @@ export default function LeftSidebar() {
               <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{league.matches}</span>
             </a>
           ))}
-          <a
-            href="/leagues"
-            className="flex items-center justify-center text-blue-600 hover:text-blue-700 transition-colors py-2 px-3 rounded-lg hover:bg-gray-50 text-sm font-medium"
-          >
-            更多联赛 →
-          </a>
         </div>
       </div>
 
