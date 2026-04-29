@@ -85,9 +85,10 @@ export default function LivePage() {
 
           <div className="divide-y divide-gray-100">
             {filteredMatches.map((match) => (
-              <div
+              <a
                 key={match.id}
-                className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 transition-colors cursor-pointer"
+                href={`/match/${match.id}`}
+                className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 transition-colors"
               >
                 <div className="col-span-2">
                   <span className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">{match.league}</span>
@@ -119,7 +120,7 @@ export default function LivePage() {
                   </span>
                   <span className="text-gray-500 text-sm">{match.minute}</span>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>
