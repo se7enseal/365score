@@ -12,10 +12,16 @@ export default function Home() {
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex gap-6">
-          <LeftSidebar />
-          <MainContent />
-          <RightSidebar />
+        <div className="flex gap-6 items-start">
+          <div className="w-64 flex-shrink-0">
+            <LeftSidebar />
+          </div>
+          <div className="flex-1">
+            <MainContent />
+          </div>
+          <div className="w-64 flex-shrink-0">
+            <RightSidebar />
+          </div>
         </div>
       </div>
 

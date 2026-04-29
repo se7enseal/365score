@@ -73,7 +73,7 @@ export default function MainContent() {
 
   return (
     <main className="flex-1 space-y-6">
-      <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-white h-[837px] overflow-hidden">
+      <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white h-48 overflow-hidden">
         <div className="flex items-center justify-between h-full">
           <div>
             <div className="text-sm opacity-80 mb-2">{currentMatch.league}</div>
