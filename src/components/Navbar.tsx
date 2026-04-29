@@ -10,7 +10,7 @@ export default function Navbar() {
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
-            <img src="/logo.jpg" alt="365比分网" className="h-10 w-auto" />
+            <img src="/logo.png" alt="365比分网" className="h-10 w-auto" />
             <span className="text-xl font-bold text-white tracking-wide">
               365比分网
             </span>

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "365比分网 - 实时足球比分",
   description: "365比分网 - 专业足球数据平台，提供即时比分、数据中心、AI预测",
   icons: {
-    icon: "/logo.jpg",
+    icon: "/logo.png",
   },
 };
 
@@ -31,9 +31,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <head>
-        <link rel="icon" href="/logo.jpg" type="image/jpeg" />
-        <link rel="shortcut icon" href="/logo.jpg" type="image/jpeg" />
-        <link rel="apple-touch-icon" href="/logo.jpg" />
+        <link rel="icon" href="/logo.png" type="image/png" />
+        <link rel="shortcut icon" href="/logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/logo.png" />
       </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
