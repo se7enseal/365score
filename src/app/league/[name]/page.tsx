@@ -4,7 +4,7 @@ import LeagueContent from '../../../components/LeagueContent';
 
 export async function generateStaticParams() {
   const leagues = ['英超', '西甲', '意甲', '德甲', '法甲', '欧冠', '欧罗巴', '欧协联', '足总杯', '国王杯', '德国杯', '意大利杯'];
-  return leagues.map((name) => ({ name }));
+  return leagues.map((name) => ({ name: encodeURIComponent(name) }));
 }
 
 interface SeasonData {
@@ -458,16 +458,22 @@ const leagueData: Record<string, LeagueData> = {
   },
 };
 
-export default function LeaguePage({ params }: { params: { name: string } }) {
-  const decodedName = decodeURIComponent(params.name);
+export default async function LeaguePage({ params }: { params: Promise<{ name: string }> }) {
+  const { name } = await params;
+  const decodedName = decodeURIComponent(name);
   
   const leagueNames: Record<string, string> = {
     '英超': '英超', '西甲': '西甲', '意甲': '意甲', '德甲': '德甲', '法甲': '法甲',
     '欧冠': '欧冠', '欧罗巴': '欧罗巴', '欧协联': '欧协联', '足总杯': '足总杯',
     '国王杯': '国王杯', '德国杯': '德国杯', '意大利杯': '意大利杯',
+    '%E8%8B%B1%E8%B6%85': '英超', '%E8%A5%BF%E7%94%B2': '西甲', '%E6%84%8F%E7%94%B2': '意甲', 
+    '%E5%BE%B7%E7%94%B2': '德甲', '%E6%B3%95%E7%94%B2': '法甲', '%E6%AC%A7%E5%86%A0': '欧冠',
+    '%E6%AC%A7%E7%BD%97%E5%B7%B4': '欧罗巴', '%E6%AC%A7%E5%8D%8F%E8%81%94': '欧协联',
+    '%E8%B6%B3%E6%80%BB%E6%9D%AF': '足总杯', '%E5%9B%BD%E7%8E%8B%E6%9D%AF': '国王杯',
+    '%E5%BE%B7%E5%9B%BD%E6%9D%AF': '德国杯', '%E6%84%8F%E5%A4%A9%E5%88%A9%E6%9D%AF': '意大利杯',
   };
 
-  const normalizedName = leagueNames[decodedName] || decodedName;
+  const normalizedName = leagueNames[name] || leagueNames[decodedName] || decodedName;
   const league = leagueData[normalizedName] || {
     name: decodedName, country: '未知', founded: '未知', teams: 0, description: '暂无详细信息',
     seasons: [], currentStandings: [], teamsList: [], rules: '', format: '',
