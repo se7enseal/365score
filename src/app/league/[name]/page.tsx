@@ -459,15 +459,17 @@ const leagueData: Record<string, LeagueData> = {
 };
 
 export default function LeaguePage({ params }: { params: { name: string } }) {
+  const decodedName = decodeURIComponent(params.name);
+  
   const leagueNames: Record<string, string> = {
     '英超': '英超', '西甲': '西甲', '意甲': '意甲', '德甲': '德甲', '法甲': '法甲',
     '欧冠': '欧冠', '欧罗巴': '欧罗巴', '欧协联': '欧协联', '足总杯': '足总杯',
     '国王杯': '国王杯', '德国杯': '德国杯', '意大利杯': '意大利杯',
   };
 
-  const normalizedName = leagueNames[params.name] || params.name;
+  const normalizedName = leagueNames[decodedName] || decodedName;
   const league = leagueData[normalizedName] || {
-    name: params.name, country: '未知', founded: '未知', teams: 0, description: '暂无详细信息',
+    name: decodedName, country: '未知', founded: '未知', teams: 0, description: '暂无详细信息',
     seasons: [], currentStandings: [], teamsList: [], rules: '', format: '',
   };
 
