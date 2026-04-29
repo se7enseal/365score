@@ -7,7 +7,7 @@ export interface Team {
 
 export interface MatchEvent {
   minute: number;
-  type: 'GOAL' | 'YELLOW_CARD' | 'RED_CARD';
+  type: 'GOAL' | 'YELLOW_CARD' | 'RED_CARD' | 'SUBSTITUTION';
   team: 'home' | 'away';
   player: string;
   assist?: string;
