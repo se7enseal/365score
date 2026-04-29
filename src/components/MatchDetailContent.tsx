@@ -523,6 +523,33 @@ export default function MatchDetailContent({ match }: { match: Match }) {
                 </div>
               </div>
             </div>
+
+            <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+              <h4 className="text-sm font-semibold text-blue-900 mb-3">📊 离散值使用指南</h4>
+              <div className="space-y-3 text-sm text-gray-700">
+                <div className="flex items-start gap-2">
+                  <span className="text-green-500 font-bold">●</span>
+                  <div>
+                    <span className="font-medium text-green-700">低离散（各家高度一致）：</span>
+                    <p className="mt-1">如果离散值远低于历史平均水平，说明机构对该结果达成了共识，通常正路出的概率大。</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-red-500 font-bold">●</span>
+                  <div>
+                    <span className="font-medium text-red-700">高离散（分歧巨大）：</span>
+                    <p className="mt-1">如果有几家巨头（如平博或威廉希尔）给出的赔率远高于平均值，而其他家较低，可能预示着热门方不稳，存在诱导可能。</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-blue-500 font-bold">●</span>
+                  <div>
+                    <span className="font-medium text-blue-700">离散对比：</span>
+                    <p className="mt-1">横向对比"胜、平、负"三项的离散值。通常情况下，离散值最小的那一项，最可能是博彩公司真实看好的方向。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
