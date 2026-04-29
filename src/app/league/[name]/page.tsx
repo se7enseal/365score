@@ -1,5 +1,6 @@
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
+import BackButton from '../../../components/BackButton';
 
 export async function generateStaticParams() {
   const leagues = ['英超', '西甲', '意甲', '德甲', '法甲', '欧冠', '欧罗巴', '欧协联', '足总杯', '国王杯', '德国杯', '意大利杯'];
@@ -440,7 +441,23 @@ const leagueData: Record<string, {
 };
 
 export default function LeaguePage({ params }: { params: { name: string } }) {
-  const league = leagueData[params.name] || {
+  const leagueNames: Record<string, string> = {
+    '英超': '英超',
+    '西甲': '西甲',
+    '意甲': '意甲',
+    '德甲': '德甲',
+    '法甲': '法甲',
+    '欧冠': '欧冠',
+    '欧罗巴': '欧罗巴',
+    '欧协联': '欧协联',
+    '足总杯': '足总杯',
+    '国王杯': '国王杯',
+    '德国杯': '德国杯',
+    '意大利杯': '意大利杯',
+  };
+
+  const normalizedName = leagueNames[params.name] || params.name;
+  const league = leagueData[normalizedName] || {
     name: params.name,
     country: '未知',
     founded: '未知',
@@ -465,6 +482,8 @@ export default function LeaguePage({ params }: { params: { name: string } }) {
       <Header />
 
       <div className="max-w-6xl mx-auto px-4 py-8">
+        <BackButton />
+
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white mb-8">
           <h1 className="text-3xl font-bold mb-2">{league.name}</h1>
           <div className="flex items-center gap-4 text-sm opacity-80">
