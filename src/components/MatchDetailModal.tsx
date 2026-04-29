@@ -26,14 +26,104 @@ interface OddsModalProps {
 }
 
 function OddsModal({ odds, title, onClose }: OddsModalProps) {
+  const calculateAverage = (oddsData: Record<string, OddsItem>) => {
+    const companies = Object.values(oddsData);
+    if (companies.length === 0) return null;
+    return {
+      homeWin: companies.reduce((sum, c) => sum + c.homeWin, 0) / companies.length,
+      draw: companies.reduce((sum, c) => sum + c.draw, 0) / companies.length,
+      awayWin: companies.reduce((sum, c) => sum + c.awayWin, 0) / companies.length,
+    };
+  };
+
+  const calculateStdDev = (values: number[]) => {
+    const mean = values.reduce((sum, v) => sum + v, 0) / values.length;
+    const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / values.length;
+    return Math.sqrt(variance);
+  };
+
+  const calculateDispersion = (oddsData: Record<string, OddsItem>) => {
+    const companies = Object.values(oddsData);
+    if (companies.length === 0) return null;
+    const homeWins = companies.map(c => c.homeWin);
+    const draws = companies.map(c => c.draw);
+    const awayWins = companies.map(c => c.awayWin);
+
+    return {
+      homeWin: calculateStdDev(homeWins),
+      draw: calculateStdDev(draws),
+      awayWin: calculateStdDev(awayWins),
+    };
+  };
+
+  const iAvg = calculateAverage(odds.initial);
+  const lAvg = odds.live && Object.keys(odds.live).length > 0 ? calculateAverage(odds.live) : null;
+  const iDisp = calculateDispersion(odds.initial);
+  const lDisp = odds.live && Object.keys(odds.live).length > 0 ? calculateDispersion(odds.live) : null;
+
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="bg-slate-900 rounded-xl w-full max-w-lg max-h-[80vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
+      <div className="bg-slate-900 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
         <div className="bg-slate-800 px-4 py-3 border-b border-slate-700 flex justify-between items-center">
           <h3 className="text-white font-bold">{title}</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-white">✕</button>
         </div>
-        <div className="p-4 overflow-y-auto max-h-[calc(80vh-60px)]">
+        <div className="p-4 overflow-y-auto max-h-[calc(90vh-60px)] space-y-4">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-slate-800/50 rounded-lg p-3">
+              <div className="text-xs text-gray-400 mb-2">初始赔率</div>
+              {iAvg && (
+                <div className="flex gap-2 text-sm">
+                  <span className="text-green-400">{iAvg.homeWin.toFixed(2)}</span>
+                  <span className="text-yellow-400">{iAvg.draw.toFixed(2)}</span>
+                  <span className="text-blue-400">{iAvg.awayWin.toFixed(2)}</span>
+                </div>
+              )}
+            </div>
+            <div className="bg-slate-800/50 rounded-lg p-3">
+              <div className="text-xs text-gray-400 mb-2">初始离散</div>
+              {iDisp && (
+                <div className="flex gap-2 text-sm">
+                  <span className="text-green-400">{iDisp.homeWin.toFixed(3)}</span>
+                  <span className="text-yellow-400">{iDisp.draw.toFixed(3)}</span>
+                  <span className="text-blue-400">{iDisp.awayWin.toFixed(3)}</span>
+                </div>
+              )}
+            </div>
+            {lAvg && (
+              <div className="bg-slate-800/50 rounded-lg p-3">
+                <div className="text-xs text-gray-400 mb-2">最终赔率</div>
+                <div className="flex gap-2 text-sm">
+                  <span className="text-green-400">{lAvg.homeWin.toFixed(2)}</span>
+                  <span className="text-yellow-400">{lAvg.draw.toFixed(2)}</span>
+                  <span className="text-blue-400">{lAvg.awayWin.toFixed(2)}</span>
+                </div>
+              </div>
+            )}
+            {lDisp && (
+              <div className="bg-slate-800/50 rounded-lg p-3">
+                <div className="text-xs text-gray-400 mb-2">最终离散</div>
+                <div className="flex gap-2 text-sm">
+                  <span className="text-green-400">{lDisp.homeWin.toFixed(3)}</span>
+                  <span className="text-yellow-400">{lDisp.draw.toFixed(3)}</span>
+                  <span className="text-blue-400">{lDisp.awayWin.toFixed(3)}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="bg-slate-800/30 rounded-lg p-3">
+            <div className="text-xs text-gray-400 mb-2">AI预测记录</div>
+            <div className="bg-slate-700/50 rounded-lg p-2">
+              <div className="text-white text-sm">
+                <span className="text-blue-400 font-bold">预测结果：</span>主胜
+              </div>
+              <div className="text-gray-400 text-xs mt-1">
+                基于历史数据分析，主队获胜概率较高
+              </div>
+            </div>
+          </div>
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -328,155 +418,155 @@ export default function MatchDetailModal({ match, onClose }: MatchDetailModalPro
           )}
 
           {activeTab === 'prediction' && (
-            <div className="space-y-4">
-              <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-xl p-4">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="bg-blue-500/20 px-3 py-1 rounded-lg flex-shrink-0">
-                    <span className="text-blue-400 font-bold text-sm">{match.aiPrediction.result}</span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between text-xs text-gray-400 mb-1">
-                      <span>置信度</span>
-                      <span className="text-white font-semibold">{match.aiPrediction.confidence}%</span>
-                    </div>
-                    <div className="w-full bg-slate-700 rounded-full h-2">
-                      <div 
-                        className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${match.aiPrediction.confidence}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-gray-300 text-sm leading-relaxed">{match.aiPrediction.analysis}</p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-slate-800/50 rounded-xl p-3">
-                  <div className="text-white font-semibold text-sm mb-3 truncate">{match.homeTeam.name}</div>
-                  <div className="flex gap-2 flex-wrap">
-                    {match.recentForm.home.map((result, idx) => (
-                      <div 
-                        key={idx}
-                        className={`${getFormColor(result)} w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs`}
-                      >
-                        {getFormText(result)}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="bg-slate-800/50 rounded-xl p-3">
-                  <div className="text-white font-semibold text-sm mb-3 truncate">{match.awayTeam.name}</div>
-                  <div className="flex gap-2 flex-wrap">
-                    {match.recentForm.away.map((result, idx) => (
-                      <div 
-                        key={idx}
-                        className={`${getFormColor(result)} w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-xs`}
-                      >
-                        {getFormText(result)}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-slate-800/50 rounded-xl overflow-hidden">
-                <div className="p-3 border-b border-slate-700 bg-slate-700/30">
-                  <h4 className="text-white font-bold text-sm">🏆 最近5场战绩 - {match.homeTeam.name}</h4>
-                </div>
-                <div className="divide-y divide-slate-700/50">
-                  {match.recentMatches?.home?.map((recentMatch, idx) => (
-                    <div 
-                      key={idx}
-                      className="px-3 py-2 flex items-center justify-between hover:bg-slate-700/30 cursor-pointer transition-colors"
-                      onClick={() => {
-                        setCurrentOdds(recentMatch.odds);
-                        setOddsTitle(`${match.homeTeam.name} vs ${recentMatch.opponent} - ${recentMatch.date}`);
-                        setShowOddsModal(true);
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs text-gray-400 w-16">{recentMatch.date}</span>
-                        <span className="text-gray-500 text-xs">
-                          {recentMatch.isHome ? '🏠' : '✈️'}
-                        </span>
-                        <span className="text-white text-sm truncate">{recentMatch.opponent}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-white font-bold text-sm">
-                          {recentMatch.homeScore} : {recentMatch.awayScore}
-                        </span>
-                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${getFormColor(recentMatch.result)} text-white`}>
-                          {getFormText(recentMatch.result)}
-                        </span>
-                        <span className="text-blue-400 text-xs">💰</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="bg-slate-800/50 rounded-xl overflow-hidden">
-                <div className="p-3 border-b border-slate-700 bg-slate-700/30">
-                  <h4 className="text-white font-bold text-sm">🏆 最近5场战绩 - {match.awayTeam.name}</h4>
-                </div>
-                <div className="divide-y divide-slate-700/50">
-                  {match.recentMatches?.away?.map((recentMatch, idx) => (
-                    <div 
-                      key={idx}
-                      className="px-3 py-2 flex items-center justify-between hover:bg-slate-700/30 cursor-pointer transition-colors"
-                      onClick={() => {
-                        setCurrentOdds(recentMatch.odds);
-                        setOddsTitle(`${match.awayTeam.name} vs ${recentMatch.opponent} - ${recentMatch.date}`);
-                        setShowOddsModal(true);
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs text-gray-400 w-16">{recentMatch.date}</span>
-                        <span className="text-gray-500 text-xs">
-                          {recentMatch.isHome ? '🏠' : '✈️'}
-                        </span>
-                        <span className="text-white text-sm truncate">{recentMatch.opponent}</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-white font-bold text-sm">
-                          {recentMatch.homeScore} : {recentMatch.awayScore}
-                        </span>
-                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${getFormColor(recentMatch.result)} text-white`}>
-                          {getFormText(recentMatch.result)}
-                        </span>
-                        <span className="text-blue-400 text-xs">💰</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
+            <div className="space-y-3">
               <div className="bg-gradient-to-r from-amber-900/30 to-orange-900/30 border border-amber-500/30 rounded-xl overflow-hidden">
-                <div className="p-3 border-b border-amber-500/30 bg-amber-800/20">
+                <div className="px-3 py-2 border-b border-amber-500/30 bg-amber-800/20">
                   <h4 className="text-amber-400 font-bold text-sm">⚔️ 历史交锋记录 (最近6场)</h4>
                 </div>
-                <div className="divide-y divide-amber-800/50">
+                <div className="divide-y divide-amber-800/30">
                   {match.headToHead?.map((h2h, idx) => (
                     <div 
                       key={idx}
-                      className="px-3 py-2 flex items-center justify-between hover:bg-amber-800/20 cursor-pointer transition-colors"
+                      className="px-3 py-1.5 flex items-center justify-between hover:bg-amber-800/15 cursor-pointer transition-colors"
                       onClick={() => {
                         setCurrentOdds(h2h.odds);
                         setOddsTitle(`${h2h.homeTeam} vs ${h2h.awayTeam} - ${h2h.date}`);
                         setShowOddsModal(true);
                       }}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xs text-amber-400/70 w-16">{h2h.date}</span>
-                        <span className="text-white text-sm truncate">{h2h.homeTeam}</span>
-                        <span className="text-gray-400 text-xs">vs</span>
-                        <span className="text-white text-sm truncate">{h2h.awayTeam}</span>
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="text-xs text-amber-400/60 w-14 truncate">{h2h.date}</span>
+                        <span className="text-xs text-gray-500 px-1.5 py-0.5 rounded bg-slate-700/50">{h2h.matchType}</span>
+                        <div className="flex-1 flex items-center justify-between px-2">
+                          <span className="text-white text-xs truncate text-right">{h2h.homeTeam}</span>
+                          <span className="text-gray-500 text-xs mx-2">vs</span>
+                          <span className="text-white text-xs truncate">{h2h.awayTeam}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-white font-bold text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-bold text-xs">
                           {h2h.homeScore} : {h2h.awayScore}
                         </span>
-                        <span className="text-xs text-amber-400/70 truncate max-w-[80px]">{h2h.venue}</span>
+                        <span className="text-blue-400 text-xs">💰</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/30 rounded-xl p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="bg-blue-500/20 px-2 py-0.5 rounded-lg flex-shrink-0">
+                    <span className="text-blue-400 font-bold text-xs">{match.aiPrediction.result}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between text-xs text-gray-400 mb-1">
+                      <span>置信度</span>
+                      <span className="text-white font-semibold">{match.aiPrediction.confidence}%</span>
+                    </div>
+                    <div className="w-full bg-slate-700 rounded-full h-1.5">
+                      <div 
+                        className="bg-gradient-to-r from-blue-500 to-purple-500 h-1.5 rounded-full transition-all duration-500"
+                        style={{ width: `${match.aiPrediction.confidence}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+                <p className="text-gray-300 text-xs leading-relaxed">{match.aiPrediction.analysis}</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="bg-slate-800/50 rounded-xl p-2.5">
+                  <div className="text-white font-semibold text-xs mb-2 truncate">{match.homeTeam.name}</div>
+                  <div className="flex gap-1.5 flex-wrap">
+                    {match.recentForm.home.map((result, idx) => (
+                      <div 
+                        key={idx}
+                        className={`${getFormColor(result)} w-7 h-7 rounded flex items-center justify-center text-white font-bold text-xs`}
+                      >
+                        {getFormText(result)}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="bg-slate-800/50 rounded-xl p-2.5">
+                  <div className="text-white font-semibold text-xs mb-2 truncate">{match.awayTeam.name}</div>
+                  <div className="flex gap-1.5 flex-wrap">
+                    {match.recentForm.away.map((result, idx) => (
+                      <div 
+                        key={idx}
+                        className={`${getFormColor(result)} w-7 h-7 rounded flex items-center justify-center text-white font-bold text-xs`}
+                      >
+                        {getFormText(result)}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-800/50 rounded-xl overflow-hidden">
+                <div className="px-3 py-2 border-b border-slate-700/50 bg-slate-700/20">
+                  <h4 className="text-white font-bold text-xs">🏆 最近5场 - {match.homeTeam.name}</h4>
+                </div>
+                <div className="divide-y divide-slate-700/30">
+                  {match.recentMatches?.home?.map((recentMatch, idx) => (
+                    <div 
+                      key={idx}
+                      className="px-3 py-1.5 flex items-center justify-between hover:bg-slate-700/20 cursor-pointer transition-colors"
+                      onClick={() => {
+                        setCurrentOdds(recentMatch.odds);
+                        setOddsTitle(`${match.homeTeam.name} vs ${recentMatch.opponent} - ${recentMatch.date}`);
+                        setShowOddsModal(true);
+                      }}
+                    >
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="text-xs text-gray-400 w-14 truncate">{recentMatch.date}</span>
+                        <span className="text-gray-500 text-xs">{recentMatch.isHome ? '🏠' : '✈️'}</span>
+                        <span className="text-xs text-gray-500 px-1.5 py-0.5 rounded bg-slate-700/50">{recentMatch.matchType}</span>
+                        <span className="text-white text-xs truncate flex-1">{recentMatch.opponent}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-bold text-xs">
+                          {recentMatch.homeScore} : {recentMatch.awayScore}
+                        </span>
+                        <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${getFormColor(recentMatch.result)} text-white`}>
+                          {getFormText(recentMatch.result)}
+                        </span>
+                        <span className="text-blue-400 text-xs">💰</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-slate-800/50 rounded-xl overflow-hidden">
+                <div className="px-3 py-2 border-b border-slate-700/50 bg-slate-700/20">
+                  <h4 className="text-white font-bold text-xs">🏆 最近5场 - {match.awayTeam.name}</h4>
+                </div>
+                <div className="divide-y divide-slate-700/30">
+                  {match.recentMatches?.away?.map((recentMatch, idx) => (
+                    <div 
+                      key={idx}
+                      className="px-3 py-1.5 flex items-center justify-between hover:bg-slate-700/20 cursor-pointer transition-colors"
+                      onClick={() => {
+                        setCurrentOdds(recentMatch.odds);
+                        setOddsTitle(`${match.awayTeam.name} vs ${recentMatch.opponent} - ${recentMatch.date}`);
+                        setShowOddsModal(true);
+                      }}
+                    >
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="text-xs text-gray-400 w-14 truncate">{recentMatch.date}</span>
+                        <span className="text-gray-500 text-xs">{recentMatch.isHome ? '🏠' : '✈️'}</span>
+                        <span className="text-xs text-gray-500 px-1.5 py-0.5 rounded bg-slate-700/50">{recentMatch.matchType}</span>
+                        <span className="text-white text-xs truncate flex-1">{recentMatch.opponent}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-bold text-xs">
+                          {recentMatch.homeScore} : {recentMatch.awayScore}
+                        </span>
+                        <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${getFormColor(recentMatch.result)} text-white`}>
+                          {getFormText(recentMatch.result)}
+                        </span>
                         <span className="text-blue-400 text-xs">💰</span>
                       </div>
                     </div>

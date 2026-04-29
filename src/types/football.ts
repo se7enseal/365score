@@ -44,6 +44,7 @@ export interface RecentMatch {
   isHome: boolean;
   result: 'W' | 'D' | 'L';
   odds: Odds;
+  matchType: '联赛' | '杯赛' | '欧冠' | '友谊赛' | string;
 }
 
 export interface RecentMatches {
@@ -59,6 +60,7 @@ export interface HeadToHead {
   awayScore: number;
   venue: string;
   odds: Odds;
+  matchType: '联赛' | '杯赛' | '欧冠' | '友谊赛' | string;
 }
 
 export interface OddsItem {
