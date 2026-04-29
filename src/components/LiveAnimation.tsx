@@ -74,7 +74,7 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
       {/* 比赛时间 */}
       <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-red-600 px-3 py-1 rounded-full">
         <span className="text-white font-bold text-sm animate-pulse">
-          LIVE {Math.floor((new Date().getTime() - new Date(match.matchTime).getTime()) / (1000 * 60))}'
+          LIVE {Math.floor((new Date().getTime() - new Date(match.matchTime).getTime()) / (1000 * 60))}&apos;
         </span>
       </div>
 
@@ -134,7 +134,7 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
                 {match.events[match.events.length - 1].player}
               </p>
               <p className="text-gray-400 text-xs">
-                {match.events[match.events.length - 1].minute}' - {match.events[match.events.length - 1].description}
+                {match.events[match.events.length - 1].minute}&apos; - {match.events[match.events.length - 1].description}
               </p>
             </div>
           </div>

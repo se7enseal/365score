@@ -40,8 +40,8 @@ export default function MatchDetailModal({ match, onClose }: MatchDetailModalPro
     }
   };
 
-  const calculateAverage = (oddsData: any) => {
-    const companies = Object.values(oddsData) as any[];
+  const calculateAverage = (oddsData: Record<string, OddsItem>) => {
+    const companies = Object.values(oddsData);
     return {
       homeWin: companies.reduce((sum, c) => sum + c.homeWin, 0) / companies.length,
       draw: companies.reduce((sum, c) => sum + c.draw, 0) / companies.length,
@@ -55,8 +55,8 @@ export default function MatchDetailModal({ match, onClose }: MatchDetailModalPro
     return Math.sqrt(variance);
   };
 
-  const calculateDispersion = (oddsData: any) => {
-    const companies = Object.values(oddsData) as any[];
+  const calculateDispersion = (oddsData: Record<string, OddsItem>) => {
+    const companies = Object.values(oddsData);
     const homeWins = companies.map(c => c.homeWin);
     const draws = companies.map(c => c.draw);
     const awayWins = companies.map(c => c.awayWin);
@@ -190,7 +190,7 @@ export default function MatchDetailModal({ match, onClose }: MatchDetailModalPro
                                 ? 'bg-gradient-to-br from-yellow-300 to-yellow-500'
                                 : 'bg-gradient-to-br from-red-500 to-red-700'
                             }`}>
-                              <span className="text-xs sm:text-sm">{event.minute}'</span>
+                              <span className="text-xs sm:text-sm">{event.minute}&apos;</span>
                             </div>
                           </div>
 
