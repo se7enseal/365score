@@ -92,7 +92,7 @@ function OddsModal({ odds, title, onClose }: OddsModalProps) {
             </div>
             {lAvg && (
               <div className="bg-slate-800/50 rounded-lg p-3">
-                <div className="text-xs text-gray-400 mb-2">最终赔率</div>
+                <div className="text-xs text-gray-400 mb-2">封盘赔率</div>
                 <div className="flex gap-2 text-sm">
                   <span className="text-green-400">{lAvg.homeWin.toFixed(2)}</span>
                   <span className="text-yellow-400">{lAvg.draw.toFixed(2)}</span>
@@ -102,7 +102,7 @@ function OddsModal({ odds, title, onClose }: OddsModalProps) {
             )}
             {lDisp && (
               <div className="bg-slate-800/50 rounded-lg p-3">
-                <div className="text-xs text-gray-400 mb-2">最终离散</div>
+                <div className="text-xs text-gray-400 mb-2">封盘离散</div>
                 <div className="flex gap-2 text-sm">
                   <span className="text-green-400">{lDisp.homeWin.toFixed(3)}</span>
                   <span className="text-yellow-400">{lDisp.draw.toFixed(3)}</span>
@@ -434,21 +434,18 @@ export default function MatchDetailModal({ match, onClose }: MatchDetailModalPro
                         setShowOddsModal(true);
                       }}
                     >
-                      <div className="flex items-center gap-2 flex-1">
-                        <span className="text-xs text-amber-400/60 w-14 truncate">{h2h.date}</span>
-                        <span className="text-xs text-gray-500 px-1.5 py-0.5 rounded bg-slate-700/50">{h2h.matchType}</span>
-                        <div className="flex-1 flex items-center justify-between px-2">
-                          <span className="text-white text-xs truncate text-right">{h2h.homeTeam}</span>
-                          <span className="text-gray-500 text-xs mx-2">vs</span>
-                          <span className="text-white text-xs truncate">{h2h.awayTeam}</span>
-                        </div>
-                      </div>
                       <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-500 px-1.5 py-0.5 rounded bg-slate-700/50">{h2h.matchType}</span>
+                        <span className="text-xs text-amber-400/60">{h2h.date}</span>
+                      </div>
+                      <div className="flex-1 flex items-center justify-center gap-3 px-4">
+                        <span className="text-white text-xs truncate text-right w-20">{h2h.homeTeam}</span>
                         <span className="text-white font-bold text-xs">
                           {h2h.homeScore} : {h2h.awayScore}
                         </span>
-                        <span className="text-blue-400 text-xs">💰</span>
+                        <span className="text-white text-xs truncate w-20">{h2h.awayTeam}</span>
                       </div>
+                      <span className="text-blue-400 text-xs">💰</span>
                     </div>
                   ))}
                 </div>
@@ -504,73 +501,75 @@ export default function MatchDetailModal({ match, onClose }: MatchDetailModalPro
                 </div>
               </div>
 
-              <div className="bg-slate-800/50 rounded-xl overflow-hidden">
-                <div className="px-3 py-2 border-b border-slate-700/50 bg-slate-700/20">
-                  <h4 className="text-white font-bold text-xs">🏆 最近5场 - {match.homeTeam.name}</h4>
-                </div>
-                <div className="divide-y divide-slate-700/30">
-                  {match.recentMatches?.home?.map((recentMatch, idx) => (
-                    <div 
-                      key={idx}
-                      className="px-3 py-1.5 flex items-center justify-between hover:bg-slate-700/20 cursor-pointer transition-colors"
-                      onClick={() => {
-                        setCurrentOdds(recentMatch.odds);
-                        setOddsTitle(`${match.homeTeam.name} vs ${recentMatch.opponent} - ${recentMatch.date}`);
-                        setShowOddsModal(true);
-                      }}
-                    >
-                      <div className="flex items-center gap-2 flex-1">
-                        <span className="text-xs text-gray-400 w-14 truncate">{recentMatch.date}</span>
-                        <span className="text-gray-500 text-xs">{recentMatch.isHome ? '🏠' : '✈️'}</span>
-                        <span className="text-xs text-gray-500 px-1.5 py-0.5 rounded bg-slate-700/50">{recentMatch.matchType}</span>
-                        <span className="text-white text-xs truncate flex-1">{recentMatch.opponent}</span>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-slate-800/50 rounded-xl overflow-hidden">
+                  <div className="px-3 py-2 border-b border-slate-700/50 bg-slate-700/20">
+                    <h4 className="text-white font-bold text-xs">🏆 最近5场 - {match.homeTeam.name}</h4>
+                  </div>
+                  <div className="divide-y divide-slate-700/30">
+                    {match.recentMatches?.home?.map((recentMatch, idx) => (
+                      <div 
+                        key={idx}
+                        className="px-2 py-1 flex items-center justify-between hover:bg-slate-700/20 cursor-pointer transition-colors"
+                        onClick={() => {
+                          setCurrentOdds(recentMatch.odds);
+                          setOddsTitle(`${match.homeTeam.name} vs ${recentMatch.opponent} - ${recentMatch.date}`);
+                          setShowOddsModal(true);
+                        }}
+                      >
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs text-gray-500 px-1 py-0.5 rounded bg-slate-700/50 text-[10px]">{recentMatch.matchType}</span>
+                          <span className="text-xs text-gray-400">{recentMatch.date}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-gray-500 text-xs">{recentMatch.isHome ? '🏠' : '✈️'}</span>
+                          <span className="text-white text-xs truncate max-w-[60px]">{recentMatch.opponent}</span>
+                          <span className="text-white font-bold text-xs">
+                            {recentMatch.homeScore}:{recentMatch.awayScore}
+                          </span>
+                          <span className={`text-xs font-bold px-1 py-0.5 rounded ${getFormColor(recentMatch.result)} text-white`}>
+                            {getFormText(recentMatch.result)}
+                          </span>
+                          <span className="text-blue-400 text-xs">💰</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-white font-bold text-xs">
-                          {recentMatch.homeScore} : {recentMatch.awayScore}
-                        </span>
-                        <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${getFormColor(recentMatch.result)} text-white`}>
-                          {getFormText(recentMatch.result)}
-                        </span>
-                        <span className="text-blue-400 text-xs">💰</span>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className="bg-slate-800/50 rounded-xl overflow-hidden">
-                <div className="px-3 py-2 border-b border-slate-700/50 bg-slate-700/20">
-                  <h4 className="text-white font-bold text-xs">🏆 最近5场 - {match.awayTeam.name}</h4>
-                </div>
-                <div className="divide-y divide-slate-700/30">
-                  {match.recentMatches?.away?.map((recentMatch, idx) => (
-                    <div 
-                      key={idx}
-                      className="px-3 py-1.5 flex items-center justify-between hover:bg-slate-700/20 cursor-pointer transition-colors"
-                      onClick={() => {
-                        setCurrentOdds(recentMatch.odds);
-                        setOddsTitle(`${match.awayTeam.name} vs ${recentMatch.opponent} - ${recentMatch.date}`);
-                        setShowOddsModal(true);
-                      }}
-                    >
-                      <div className="flex items-center gap-2 flex-1">
-                        <span className="text-xs text-gray-400 w-14 truncate">{recentMatch.date}</span>
-                        <span className="text-gray-500 text-xs">{recentMatch.isHome ? '🏠' : '✈️'}</span>
-                        <span className="text-xs text-gray-500 px-1.5 py-0.5 rounded bg-slate-700/50">{recentMatch.matchType}</span>
-                        <span className="text-white text-xs truncate flex-1">{recentMatch.opponent}</span>
+                <div className="bg-slate-800/50 rounded-xl overflow-hidden">
+                  <div className="px-3 py-2 border-b border-slate-700/50 bg-slate-700/20">
+                    <h4 className="text-white font-bold text-xs">🏆 最近5场 - {match.awayTeam.name}</h4>
+                  </div>
+                  <div className="divide-y divide-slate-700/30">
+                    {match.recentMatches?.away?.map((recentMatch, idx) => (
+                      <div 
+                        key={idx}
+                        className="px-2 py-1 flex items-center justify-between hover:bg-slate-700/20 cursor-pointer transition-colors"
+                        onClick={() => {
+                          setCurrentOdds(recentMatch.odds);
+                          setOddsTitle(`${match.awayTeam.name} vs ${recentMatch.opponent} - ${recentMatch.date}`);
+                          setShowOddsModal(true);
+                        }}
+                      >
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs text-gray-500 px-1 py-0.5 rounded bg-slate-700/50 text-[10px]">{recentMatch.matchType}</span>
+                          <span className="text-xs text-gray-400">{recentMatch.date}</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-gray-500 text-xs">{recentMatch.isHome ? '🏠' : '✈️'}</span>
+                          <span className="text-white text-xs truncate max-w-[60px]">{recentMatch.opponent}</span>
+                          <span className="text-white font-bold text-xs">
+                            {recentMatch.homeScore}:{recentMatch.awayScore}
+                          </span>
+                          <span className={`text-xs font-bold px-1 py-0.5 rounded ${getFormColor(recentMatch.result)} text-white`}>
+                            {getFormText(recentMatch.result)}
+                          </span>
+                          <span className="text-blue-400 text-xs">💰</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-white font-bold text-xs">
-                          {recentMatch.homeScore} : {recentMatch.awayScore}
-                        </span>
-                        <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${getFormColor(recentMatch.result)} text-white`}>
-                          {getFormText(recentMatch.result)}
-                        </span>
-                        <span className="text-blue-400 text-xs">💰</span>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
