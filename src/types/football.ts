@@ -36,6 +36,31 @@ export interface RecentForm {
   away: string[];
 }
 
+export interface RecentMatch {
+  date: string;
+  opponent: string;
+  homeScore: number;
+  awayScore: number;
+  isHome: boolean;
+  result: 'W' | 'D' | 'L';
+  odds: Odds;
+}
+
+export interface RecentMatches {
+  home: RecentMatch[];
+  away: RecentMatch[];
+}
+
+export interface HeadToHead {
+  date: string;
+  homeTeam: string;
+  awayTeam: string;
+  homeScore: number;
+  awayScore: number;
+  venue: string;
+  odds: Odds;
+}
+
 export interface OddsItem {
   homeWin: number;
   draw: number;
@@ -51,14 +76,14 @@ export interface Odds {
     'Interwetten': OddsItem;
     'SNAI': OddsItem;
   };
-  live: {
+  live: Partial<{
     '竞彩官方': OddsItem;
     '澳门': OddsItem;
     '威廉希尔': OddsItem;
     '立博': OddsItem;
     'Interwetten': OddsItem;
     'SNAI': OddsItem;
-  };
+  }>;
   lastUpdate: string;
 }
 
@@ -77,6 +102,8 @@ export interface Match {
   lineups: Lineups;
   aiPrediction: AIPrediction;
   recentForm: RecentForm;
+  recentMatches: RecentMatches;
+  headToHead: HeadToHead[];
   odds: Odds;
 }
 

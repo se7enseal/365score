@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, Fragment } from 'react';
-import { Match, OddsItem } from '../types/football';
+import { Match, OddsItem, Odds } from '../types/football';
 import LiveAnimation from './LiveAnimation';
 import FormationDisplay from './FormationDisplay';
 
@@ -19,8 +19,58 @@ const oddsCompanies = [
   'SNAI'
 ] as const;
 
+interface OddsModalProps {
+  odds: Odds;
+  title: string;
+  onClose: () => void;
+}
+
+function OddsModal({ odds, title, onClose }: OddsModalProps) {
+  return (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-slate-900 rounded-xl w-full max-w-lg max-h-[80vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
+        <div className="bg-slate-800 px-4 py-3 border-b border-slate-700 flex justify-between items-center">
+          <h3 className="text-white font-bold">{title}</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-white">✕</button>
+        </div>
+        <div className="p-4 overflow-y-auto max-h-[calc(80vh-60px)]">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="bg-slate-700/50">
+                  <th className="px-2 py-2 text-left text-xs font-semibold text-gray-300">公司</th>
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-green-400">主胜</th>
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-yellow-400">平局</th>
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-blue-400">客胜</th>
+                </tr>
+              </thead>
+              <tbody>
+                {oddsCompanies.map((company) => {
+                  const initialOdds = odds?.initial[company];
+                  if (!initialOdds) return null;
+                  return (
+                    <tr key={company} className="border-b border-slate-700/50">
+                      <td className="px-2 py-2 text-white text-xs">{company}</td>
+                      <td className="px-2 py-2 text-center text-gray-300 text-sm">{initialOdds.homeWin.toFixed(2)}</td>
+                      <td className="px-2 py-2 text-center text-gray-300 text-sm">{initialOdds.draw.toFixed(2)}</td>
+                      <td className="px-2 py-2 text-center text-gray-300 text-sm">{initialOdds.awayWin.toFixed(2)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function MatchDetailModal({ match, onClose }: MatchDetailModalProps) {
   const [activeTab, setActiveTab] = useState<'animation' | 'events' | 'lineups' | 'prediction' | 'odds'>('animation');
+  const [showOddsModal, setShowOddsModal] = useState(false);
+  const [currentOdds, setCurrentOdds] = useState<Odds | null>(null);
+  const [oddsTitle, setOddsTitle] = useState('');
 
   const getFormColor = (result: string) => {
     switch (result) {
@@ -74,6 +124,13 @@ export default function MatchDetailModal({ match, onClose }: MatchDetailModalPro
   const lDisp = match.odds ? calculateDispersion(match.odds.live) : null;
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+      {showOddsModal && currentOdds && (
+        <OddsModal 
+          odds={currentOdds} 
+          title={oddsTitle} 
+          onClose={() => setShowOddsModal(false)} 
+        />
+      )}
       <div 
         className="bg-slate-900 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-5xl h-[90vh] sm:h-auto sm:max-h-[90vh] overflow-hidden border-t sm:border border-slate-700 shadow-2xl flex flex-col"
         onClick={(e) => e.stopPropagation()}
@@ -319,6 +376,111 @@ export default function MatchDetailModal({ match, onClose }: MatchDetailModalPro
                       </div>
                     ))}
                   </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-800/50 rounded-xl overflow-hidden">
+                <div className="p-3 border-b border-slate-700 bg-slate-700/30">
+                  <h4 className="text-white font-bold text-sm">🏆 最近5场战绩 - {match.homeTeam.name}</h4>
+                </div>
+                <div className="divide-y divide-slate-700/50">
+                  {match.recentMatches?.home?.map((recentMatch, idx) => (
+                    <div 
+                      key={idx}
+                      className="px-3 py-2 flex items-center justify-between hover:bg-slate-700/30 cursor-pointer transition-colors"
+                      onClick={() => {
+                        setCurrentOdds(recentMatch.odds);
+                        setOddsTitle(`${match.homeTeam.name} vs ${recentMatch.opponent} - ${recentMatch.date}`);
+                        setShowOddsModal(true);
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-gray-400 w-16">{recentMatch.date}</span>
+                        <span className="text-gray-500 text-xs">
+                          {recentMatch.isHome ? '🏠' : '✈️'}
+                        </span>
+                        <span className="text-white text-sm truncate">{recentMatch.opponent}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-white font-bold text-sm">
+                          {recentMatch.homeScore} : {recentMatch.awayScore}
+                        </span>
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${getFormColor(recentMatch.result)} text-white`}>
+                          {getFormText(recentMatch.result)}
+                        </span>
+                        <span className="text-blue-400 text-xs">💰</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-slate-800/50 rounded-xl overflow-hidden">
+                <div className="p-3 border-b border-slate-700 bg-slate-700/30">
+                  <h4 className="text-white font-bold text-sm">🏆 最近5场战绩 - {match.awayTeam.name}</h4>
+                </div>
+                <div className="divide-y divide-slate-700/50">
+                  {match.recentMatches?.away?.map((recentMatch, idx) => (
+                    <div 
+                      key={idx}
+                      className="px-3 py-2 flex items-center justify-between hover:bg-slate-700/30 cursor-pointer transition-colors"
+                      onClick={() => {
+                        setCurrentOdds(recentMatch.odds);
+                        setOddsTitle(`${match.awayTeam.name} vs ${recentMatch.opponent} - ${recentMatch.date}`);
+                        setShowOddsModal(true);
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-gray-400 w-16">{recentMatch.date}</span>
+                        <span className="text-gray-500 text-xs">
+                          {recentMatch.isHome ? '🏠' : '✈️'}
+                        </span>
+                        <span className="text-white text-sm truncate">{recentMatch.opponent}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-white font-bold text-sm">
+                          {recentMatch.homeScore} : {recentMatch.awayScore}
+                        </span>
+                        <span className={`text-xs font-bold px-2 py-0.5 rounded ${getFormColor(recentMatch.result)} text-white`}>
+                          {getFormText(recentMatch.result)}
+                        </span>
+                        <span className="text-blue-400 text-xs">💰</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-gradient-to-r from-amber-900/30 to-orange-900/30 border border-amber-500/30 rounded-xl overflow-hidden">
+                <div className="p-3 border-b border-amber-500/30 bg-amber-800/20">
+                  <h4 className="text-amber-400 font-bold text-sm">⚔️ 历史交锋记录 (最近6场)</h4>
+                </div>
+                <div className="divide-y divide-amber-800/50">
+                  {match.headToHead?.map((h2h, idx) => (
+                    <div 
+                      key={idx}
+                      className="px-3 py-2 flex items-center justify-between hover:bg-amber-800/20 cursor-pointer transition-colors"
+                      onClick={() => {
+                        setCurrentOdds(h2h.odds);
+                        setOddsTitle(`${h2h.homeTeam} vs ${h2h.awayTeam} - ${h2h.date}`);
+                        setShowOddsModal(true);
+                      }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-amber-400/70 w-16">{h2h.date}</span>
+                        <span className="text-white text-sm truncate">{h2h.homeTeam}</span>
+                        <span className="text-gray-400 text-xs">vs</span>
+                        <span className="text-white text-sm truncate">{h2h.awayTeam}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-white font-bold text-sm">
+                          {h2h.homeScore} : {h2h.awayScore}
+                        </span>
+                        <span className="text-xs text-amber-400/70 truncate max-w-[80px]">{h2h.venue}</span>
+                        <span className="text-blue-400 text-xs">💰</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
