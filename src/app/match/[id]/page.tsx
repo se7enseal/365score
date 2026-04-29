@@ -55,8 +55,8 @@ const getMatchData = (id: string) => {
       { time: '75\'', type: 'substitution', team: 'home', player: '普利西奇 ↔ 斯特林', description: '换人' },
     ],
     stats: {
-      home: { possession: 58, shots: 18, shotsOnTarget: 8, corners: 6, fouls: 12, yellowCards: 2, redCards: 0 },
-      away: { possession: 42, shots: 12, shotsOnTarget: 4, corners: 4, fouls: 15, yellowCards: 3, redCards: 0 },
+      home: { possession: 58, shots: 18, shotsOnTarget: 8, corners: 6, fouls: 12, yellowCards: 2, redCards: 0, attacks: 79, dangerousAttacks: 44, penalties: 1 },
+      away: { possession: 42, shots: 12, shotsOnTarget: 4, corners: 4, fouls: 15, yellowCards: 3, redCards: 0, attacks: 54, dangerousAttacks: 31, penalties: 0 },
     },
     headToHead: [
       { date: '2023-11-06', home: '热刺', away: '切尔西', homeScore: 1, awayScore: 4, league: '英超' },

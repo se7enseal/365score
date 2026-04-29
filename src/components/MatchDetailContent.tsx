@@ -16,8 +16,8 @@ interface Match {
   awayLineup: Array<{ number: number; name: string; position: string }>;
   events: Array<{ time: string; type: string; team: string; player: string; description: string }>;
   stats: {
-    home: { possession: number; shots: number; shotsOnTarget: number; corners: number; fouls: number; yellowCards: number; redCards: number };
-    away: { possession: number; shots: number; shotsOnTarget: number; corners: number; fouls: number; yellowCards: number; redCards: number };
+    home: { possession: number; shots: number; shotsOnTarget: number; corners: number; fouls: number; yellowCards: number; redCards: number; attacks: number; dangerousAttacks: number; penalties: number };
+    away: { possession: number; shots: number; shotsOnTarget: number; corners: number; fouls: number; yellowCards: number; redCards: number; attacks: number; dangerousAttacks: number; penalties: number };
   };
   headToHead: Array<{ date: string; home: string; away: string; homeScore: number; awayScore: number; league: string }>;
   homeRecentMatches: Array<{ date: string; opponent: string; homeScore: number; awayScore: number; result: string }>;
@@ -31,20 +31,44 @@ interface Match {
 }
 
 export default function MatchDetailContent({ match }: { match: Match }) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'lineup' | 'events' | 'stats' | 'headToHead' | 'recent' | 'odds'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'lineup' | 'events' | 'headToHead' | 'recent' | 'odds'>('overview');
 
   const tabs = [
     { id: 'overview' as const, label: '比赛概览' },
     { id: 'lineup' as const, label: '首发阵容' },
     { id: 'events' as const, label: '比赛事件' },
-    { id: 'stats' as const, label: '统计数据' },
     { id: 'headToHead' as const, label: '交锋历史' },
     { id: 'recent' as const, label: '近期战绩' },
     { id: 'odds' as const, label: '赔率数据' },
   ];
 
+  const handleBack = () => {
+    window.history.back();
+  };
+
+  const getProgressWidth = (home: number, away: number) => {
+    const total = home + away;
+    if (total === 0) return { home: 50, away: 50 };
+    return {
+      home: (home / total) * 100,
+      away: (away / total) * 100,
+    };
+  };
+
   return (
     <div>
+      <div className="flex items-center gap-4 mb-6">
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          返回上一页
+        </button>
+      </div>
+
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-8">
@@ -92,24 +116,187 @@ export default function MatchDetailContent({ match }: { match: Match }) {
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">比赛亮点</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-blue-600">{match.homeScore}</div>
-                  <div className="text-sm text-gray-600">{match.homeTeam}进球</div>
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-lg font-semibold text-gray-900">数据统计</span>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">⛳</span>
+                  <span className="text-gray-500 text-sm">{match.stats.home.corners}</span>
                 </div>
-                <div className="bg-red-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-red-600">{match.awayScore}</div>
-                  <div className="text-sm text-gray-600">{match.awayTeam}进球</div>
+                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-green-500 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.corners, match.stats.away.corners).home}%` }} 
+                  />
+                  <div 
+                    className="h-full bg-red-500 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.corners, match.stats.away.corners).away}%` }} 
+                  />
                 </div>
-                <div className="bg-purple-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-purple-600">{match.stats.home.possession}%</div>
-                  <div className="text-sm text-gray-600">{match.homeTeam}控球率</div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-500 text-sm">{match.stats.away.corners}</span>
+                  <span className="text-red-500">⛳</span>
                 </div>
+                <span className="text-gray-500 text-sm w-16 text-center">角球</span>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-red-500">🟥</span>
+                  <span className="text-gray-500 text-sm">{match.stats.home.redCards}</span>
+                </div>
+                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-red-600 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.redCards, match.stats.away.redCards).home}%` }} 
+                  />
+                  <div 
+                    className="h-full bg-red-400 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.redCards, match.stats.away.redCards).away}%` }} 
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-500 text-sm">{match.stats.away.redCards}</span>
+                  <span className="text-red-500">🟥</span>
+                </div>
+                <span className="text-gray-500 text-sm w-16 text-center">红牌</span>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-yellow-500">🟨</span>
+                  <span className="text-gray-500 text-sm">{match.stats.home.yellowCards}</span>
+                </div>
+                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-yellow-500 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.yellowCards, match.stats.away.yellowCards).home}%` }} 
+                  />
+                  <div 
+                    className="h-full bg-yellow-400 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.yellowCards, match.stats.away.yellowCards).away}%` }} 
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-500 text-sm">{match.stats.away.yellowCards}</span>
+                  <span className="text-yellow-500">🟨</span>
+                </div>
+                <span className="text-gray-500 text-sm w-16 text-center">黄牌</span>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-blue-500">⚽</span>
+                  <span className="text-gray-500 text-sm">{match.stats.home.shots}({match.stats.home.shotsOnTarget})</span>
+                </div>
+                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-blue-500 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.shots, match.stats.away.shots).home}%` }} 
+                  />
+                  <div 
+                    className="h-full bg-orange-500 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.shots, match.stats.away.shots).away}%` }} 
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-500 text-sm">{match.stats.away.shots}({match.stats.away.shotsOnTarget})</span>
+                  <span className="text-orange-500">⚽</span>
+                </div>
+                <span className="text-gray-500 text-sm w-16 text-center">射门(射正)</span>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-purple-500">⚡</span>
+                  <span className="text-gray-500 text-sm">{match.stats.home.attacks}</span>
+                </div>
+                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-purple-500 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.attacks, match.stats.away.attacks).home}%` }} 
+                  />
+                  <div 
+                    className="h-full bg-pink-500 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.attacks, match.stats.away.attacks).away}%` }} 
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-500 text-sm">{match.stats.away.attacks}</span>
+                  <span className="text-pink-500">⚡</span>
+                </div>
+                <span className="text-gray-500 text-sm w-16 text-center">进攻</span>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-green-500">🔥</span>
+                  <span className="text-gray-500 text-sm">{match.stats.home.dangerousAttacks}</span>
+                </div>
+                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-green-500 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.dangerousAttacks, match.stats.away.dangerousAttacks).home}%` }} 
+                  />
+                  <div 
+                    className="h-full bg-orange-500 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.dangerousAttacks, match.stats.away.dangerousAttacks).away}%` }} 
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-500 text-sm">{match.stats.away.dangerousAttacks}</span>
+                  <span className="text-orange-500">🔥</span>
+                </div>
+                <span className="text-gray-500 text-sm w-16 text-center">危险进攻</span>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-blue-500">⚽</span>
+                  <span className="text-gray-500 text-sm">{match.stats.home.penalties}</span>
+                </div>
+                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-blue-500 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.penalties, match.stats.away.penalties).home}%` }} 
+                  />
+                  <div 
+                    className="h-full bg-red-500 transition-all" 
+                    style={{ width: `${getProgressWidth(match.stats.home.penalties, match.stats.away.penalties).away}%` }} 
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-500 text-sm">{match.stats.away.penalties}</span>
+                  <span className="text-red-500">⚽</span>
+                </div>
+                <span className="text-gray-500 text-sm w-16 text-center">点球</span>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-blue-600 font-bold">{match.stats.home.possession}%</span>
+                </div>
+                <div className="flex-1 h-3 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-blue-500 transition-all" 
+                    style={{ width: `${match.stats.home.possession}%` }} 
+                  />
+                  <div 
+                    className="h-full bg-red-500 transition-all" 
+                    style={{ width: `${match.stats.away.possession}%` }} 
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-red-600 font-bold">{match.stats.away.possession}%</span>
+                </div>
+                <span className="text-gray-500 text-sm w-16 text-center">控球率</span>
               </div>
             </div>
-            <div>
+
+            <div className="mt-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">进球时刻</h3>
               <div className="space-y-2">
                 {match.events.filter(e => e.type === 'goal').map((event, idx) => (
@@ -187,63 +374,6 @@ export default function MatchDetailContent({ match }: { match: Match }) {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'stats' && (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900">比赛统计</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">{match.stats.home.possession}%</div>
-                <div className="text-sm text-gray-500">控球率</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-red-600">{match.stats.away.possession}%</div>
-                <div className="text-sm text-gray-500">控球率</div>
-              </div>
-            </div>
-            <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-blue-600" style={{ width: `${match.stats.home.possession}%` }} />
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-blue-50 rounded-lg p-4 text-center">
-                <div className="text-xl font-bold text-blue-600">{match.stats.home.shots}</div>
-                <div className="text-sm text-gray-600">射门</div>
-                <div className="text-xs text-gray-400">{match.stats.home.shotsOnTarget} 射正</div>
-              </div>
-              <div className="bg-red-50 rounded-lg p-4 text-center">
-                <div className="text-xl font-bold text-red-600">{match.stats.away.shots}</div>
-                <div className="text-sm text-gray-600">射门</div>
-                <div className="text-xs text-gray-400">{match.stats.away.shotsOnTarget} 射正</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-4 text-center">
-                <div className="text-xl font-bold text-blue-600">{match.stats.home.corners}</div>
-                <div className="text-sm text-gray-600">角球</div>
-              </div>
-              <div className="bg-red-50 rounded-lg p-4 text-center">
-                <div className="text-xl font-bold text-red-600">{match.stats.away.corners}</div>
-                <div className="text-sm text-gray-600">角球</div>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-gray-50 rounded-lg p-4 text-center">
-                <div className="text-xl font-bold text-gray-600">{match.stats.home.fouls}</div>
-                <div className="text-sm text-gray-600">犯规</div>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-4 text-center">
-                <div className="text-xl font-bold text-gray-600">{match.stats.away.fouls}</div>
-                <div className="text-sm text-gray-600">犯规</div>
-              </div>
-              <div className="bg-yellow-50 rounded-lg p-4 text-center">
-                <div className="text-xl font-bold text-yellow-600">{match.stats.home.yellowCards}</div>
-                <div className="text-sm text-gray-600">黄牌</div>
-              </div>
-              <div className="bg-yellow-50 rounded-lg p-4 text-center">
-                <div className="text-xl font-bold text-yellow-600">{match.stats.away.yellowCards}</div>
-                <div className="text-sm text-gray-600">黄牌</div>
-              </div>
             </div>
           </div>
         )}
