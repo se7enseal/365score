@@ -12,6 +12,8 @@ export default function LeftSidebar() {
     { name: '德甲', matches: 9, icon: '🇩🇪' },
     { name: '法甲', matches: 7, icon: '🇫🇷' },
     { name: '欧冠', matches: 4, icon: '⭐' },
+    { name: '欧罗巴', matches: 6, icon: '🥈' },
+    { name: '欧协联', matches: 5, icon: '🥉' },
   ];
 
   const quickLinks = [
