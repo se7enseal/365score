@@ -10,15 +10,6 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
   const isLive = match.status === 'LIVE';
   const isFinished = match.status === 'FINISHED';
 
-  if (!isLive && !isFinished) {
-    return (
-      <div className="text-center text-gray-400 py-8">
-        <p className="text-lg">比赛尚未开始</p>
-        <p className="text-sm mt-2">比赛时间: {new Date(match.matchTime).toLocaleString('zh-CN')}</p>
-      </div>
-    );
-  }
-
   const getBallPosition = () => {
     const now = new Date();
     const start = new Date(match.matchTime);
@@ -111,9 +102,36 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
   const awayMidfielders = createVerticalPositions(awayForm.midfielders, 65);
   const awayForwards = createVerticalPositions(awayForm.forwards, 55);
 
+  const statsItems = [
+    { label: '控球率', home: homeStats.possession, away: awayStats.possession, max: 100, suffix: '%' },
+    { label: '进攻', home: homeStats.attacks, away: awayStats.attacks, max: 100 },
+    { label: '危险进攻', home: homeStats.dangerousAttacks, away: awayStats.dangerousAttacks, max: 60 },
+    { label: '射门', home: homeStats.shots, away: awayStats.shots, max: 30 },
+    { label: '射正', home: homeStats.shotsOnTarget, away: awayStats.shotsOnTarget, max: 15 },
+    { label: '角球', home: homeStats.corners, away: awayStats.corners, max: 15 },
+    { label: '黄牌', home: homeStats.yellowCards, away: awayStats.yellowCards, max: 6 },
+    { label: '红牌', home: homeStats.redCards, away: awayStats.redCards, max: 3 },
+    { label: '点球', home: homeStats.penalties, away: awayStats.penalties, max: 3 },
+  ];
+
+  if (!isLive && !isFinished) {
+    return (
+      <div className="w-full aspect-video bg-gradient-to-b from-green-800 to-green-900 rounded-xl overflow-hidden border-2 border-green-700 flex items-center justify-center">
+        <div className="text-center text-gray-400">
+          <p className="text-lg font-semibold mb-2">动画直播仅在比赛进行中时可用</p>
+          <p className="text-sm">比赛时间: {new Date(match.matchTime).toLocaleString('zh-CN')}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="relative w-full aspect-video bg-gradient-to-b from-green-800 to-green-900 rounded-xl overflow-hidden border-2 border-green-700 flex flex-col">
-      <div className="flex-1 relative">
+    <div className="relative w-full bg-gray-900 rounded-xl overflow-hidden border-2 border-gray-700">
+      <div className="text-center bg-gray-800 py-1">
+        <span className="text-xs text-gray-400">动画直播仅在比赛进行中时可用</span>
+      </div>
+
+      <div className="relative w-full aspect-video bg-gradient-to-b from-green-800 to-green-900">
         <div className="absolute inset-0 opacity-30">
           <div className="absolute inset-4 border-2 border-white/50 rounded-lg"></div>
           <div className="absolute top-1/2 left-0 right-0 h-px bg-white/50"></div>
@@ -121,8 +139,6 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-white/50 rounded-full"></div>
           <div className="absolute left-0 top-1/4 bottom-1/4 w-16 border-r-2 border-y-2 border-white/50"></div>
           <div className="absolute right-0 top-1/4 bottom-1/4 w-16 border-l-2 border-y-2 border-white/50"></div>
-          <div className="absolute left-25 top-0 bottom-0 w-px bg-white/20"></div>
-          <div className="absolute right-25 top-0 bottom-0 w-px bg-white/20"></div>
         </div>
 
         <div className="absolute top-2 left-4 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg">
@@ -249,37 +265,20 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
               </div>
             ))}
 
-            <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-sm rounded-lg p-2">
+            <div className="absolute top-10 left-4 bg-black/60 backdrop-blur-sm rounded-lg p-2">
               <div className="text-xs text-gray-400">主队阵型</div>
               <div className="text-white font-bold text-sm">{homeFormation}</div>
             </div>
 
-            <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-2">
+            <div className="absolute top-10 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-2">
               <div className="text-xs text-gray-400">客队阵型</div>
               <div className="text-white font-bold text-sm">{awayFormation}</div>
             </div>
           </>
         )}
 
-        {isFinished && substitutions.length > 0 && (
-          <div className="absolute bottom-32 left-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg p-2 max-h-16 overflow-y-auto">
-            <div className="text-xs text-gray-400 mb-1">换人事件</div>
-            <div className="flex flex-wrap gap-2">
-              {substitutions.map((event, idx) => (
-                <div key={idx} className="flex items-center gap-1 text-xs bg-slate-800/50 px-2 py-1 rounded">
-                  <span className="text-yellow-400 font-bold">{formatTime(event.minute)}</span>
-                  <span className={`${event.team === 'home' ? 'text-blue-400' : 'text-red-400'}`}>
-                    {event.player}
-                  </span>
-                  <span className="text-gray-500">{event.description}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {isLive && match.events.length > 0 && (
-          <div className="absolute bottom-32 left-4 right-4 bg-black/70 backdrop-blur-md rounded-lg p-3 border border-white/10">
+          <div className="absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-md rounded-lg p-3 border border-white/10">
             <div className="flex items-center gap-2">
               <span className="text-lg">
                 {match.events[match.events.length - 1].type === 'GOAL' ? '⚽' : 
@@ -298,90 +297,62 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
         )}
       </div>
 
-      {isFinished && (
-        <div className="bg-gray-900 border-t border-gray-700 p-3">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              {Array.from({ length: homeStats.yellowCards }).map((_, i) => (
-                <span key={i} className="text-yellow-400">🟨</span>
-              ))}
-              {Array.from({ length: homeStats.redCards }).map((_, i) => (
-                <span key={i} className="text-red-400">🟥</span>
-              ))}
-              <span className="text-green-400">⛳</span>
-              <span className="text-xs text-gray-400">{homeStats.corners}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400">控球率</span>
-              <div className="w-32 h-2 bg-gray-700 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-blue-500 to-blue-400"
-                  style={{ width: `${homeStats.possession}%` }}
-                ></div>
+      {isFinished && substitutions.length > 0 && (
+        <div className="bg-gray-800 px-4 py-2 border-b border-gray-700">
+          <div className="text-xs text-gray-400 mb-1">换人事件</div>
+          <div className="flex flex-wrap gap-2">
+            {substitutions.map((event, idx) => (
+              <div key={idx} className="flex items-center gap-1 text-xs bg-slate-700/50 px-2 py-1 rounded">
+                <span className="text-yellow-400 font-bold">{formatTime(event.minute)}</span>
+                <span className={`${event.team === 'home' ? 'text-blue-400' : 'text-red-400'}`}>
+                  {event.player}
+                </span>
+                <span className="text-gray-500">{event.description}</span>
               </div>
-              <span className="text-xs text-blue-400 font-bold">{homeStats.possession}%</span>
-              <span className="text-xs text-gray-500">|</span>
-              <span className="text-xs text-red-400 font-bold">{awayStats.possession}%</span>
-              <div className="w-32 h-2 bg-gray-700 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-l from-red-500 to-red-400"
-                  style={{ width: `${awayStats.possession}%` }}
-                ></div>
-              </div>
-              <span className="text-xs text-gray-400">控球率</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-400">{awayStats.corners}</span>
-              <span className="text-green-400">⛳</span>
-              {Array.from({ length: awayStats.yellowCards }).map((_, i) => (
-                <span key={i} className="text-yellow-400">🟨</span>
-              ))}
-              {Array.from({ length: awayStats.redCards }).map((_, i) => (
-                <span key={i} className="text-red-400">🟥</span>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-4 text-xs">
-            <div className="flex justify-between">
-              <span className="text-gray-400">进攻</span>
-              <span className="text-blue-400">{homeStats.attacks}</span>
-              <span className="text-red-400">{awayStats.attacks}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">射门(射正)</span>
-              <span className="text-blue-400">{homeStats.shots}({homeStats.shotsOnTarget})</span>
-              <span className="text-red-400">{awayStats.shots}({awayStats.shotsOnTarget})</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-400">危险进攻</span>
-              <span className="text-blue-400">{homeStats.dangerousAttacks}</span>
-              <span className="text-red-400">{awayStats.dangerousAttacks}</span>
-            </div>
-          </div>
-
-          <div className="mt-2 flex justify-center">
-            <div className="flex items-center gap-4 text-xs">
-              <div className="flex items-center gap-1">
-                <span className="text-gray-400">点球:</span>
-                <span className="text-blue-400">{homeStats.penalties}</span>
-              </div>
-              <span className="text-gray-600">|</span>
-              <div className="flex items-center gap-1">
-                <span className="text-gray-400">点球:</span>
-                <span className="text-red-400">{awayStats.penalties}</span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       )}
 
-      <style jsx>{`
-        @keyframes float {
-          0% { transform: translateY(0px); }
-          100% { transform: translateY(-10px); }
-        }
-      `}</style>
+      {isFinished && (
+        <div className="bg-gray-900 p-3">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="text-center">
+              <div className="text-xs text-blue-400 font-bold mb-1">{match.homeTeam.name}</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-gray-400 font-bold mb-1">统计数据</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xs text-red-400 font-bold mb-1">{match.awayTeam.name}</div>
+            </div>
+
+            {statsItems.map((item, idx) => (
+              <>
+                <div className="flex justify-end items-center h-6 px-1">
+                  <span className="text-xs text-blue-400">{item.home}{item.suffix || ''}</span>
+                </div>
+                <div className="h-6 flex items-center">
+                  <span className="text-xs text-gray-400 w-16">{item.label}</span>
+                  <div className="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden flex">
+                    <div 
+                      className="h-full bg-blue-500 transition-all"
+                      style={{ width: `${(item.home / item.max) * 50}%` }}
+                    ></div>
+                    <div 
+                      className="h-full bg-red-500 transition-all"
+                      style={{ width: `${(item.away / item.max) * 50}%` }}
+                    ></div>
+                  </div>
+                </div>
+                <div className="flex justify-start items-center h-6 px-1">
+                  <span className="text-xs text-red-400">{item.away}{item.suffix || ''}</span>
+                </div>
+              </>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
