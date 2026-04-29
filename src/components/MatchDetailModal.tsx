@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, Fragment } from 'react';
-import { Match } from '../types/football';
+import { Match, OddsItem } from '../types/football';
 import LiveAnimation from './LiveAnimation';
 import FormationDisplay from './FormationDisplay';
 
