@@ -42,9 +42,45 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
     return `HT+${minute - 45}'`;
   };
 
-  const homeStarting = match.lineups?.home?.starting || [];
-  const awayStarting = match.lineups?.away?.starting || [];
+  const homeFormation = match.lineups?.home?.formation || '4-3-3';
+  const awayFormation = match.lineups?.away?.formation || '4-3-3';
+  
+  const homePlayers = match.lineups?.home?.starting || [];
+  const awayPlayers = match.lineups?.away?.starting || [];
+  
   const substitutions = match.events?.filter(e => e.type === 'SUBSTITUTION') || [];
+
+  const parseFormation = (formation: string) => {
+    const parts = formation.split('-').map(Number);
+    return {
+      defenders: parts[0] || 4,
+      midfielders: parts[1] || 3,
+      forwards: parts[2] || 3
+    };
+  };
+
+  const homeForm = parseFormation(homeFormation);
+  const awayForm = parseFormation(awayFormation);
+
+  const createPlayerPositions = (count: number, baseY: number, side: 'left' | 'right') => {
+    const positions = [];
+    const spacing = 60 / (count + 1);
+    for (let i = 0; i < count; i++) {
+      const x = side === 'left' ? 15 + spacing * (i + 1) : 85 - spacing * (i + 1);
+      positions.push({ x, y: baseY });
+    }
+    return positions;
+  };
+
+  const homeGK = { x: 18, y: 15 };
+  const homeDefenders = createPlayerPositions(homeForm.defenders, 28, 'left');
+  const homeMidfielders = createPlayerPositions(homeForm.midfielders, 50, 'left');
+  const homeForwards = createPlayerPositions(homeForm.forwards, 72, 'left');
+
+  const awayGK = { x: 82, y: 85 };
+  const awayDefenders = createPlayerPositions(awayForm.defenders, 72, 'right');
+  const awayMidfielders = createPlayerPositions(awayForm.midfielders, 50, 'right');
+  const awayForwards = createPlayerPositions(awayForm.forwards, 28, 'right');
 
   return (
     <div className="relative w-full aspect-video bg-gradient-to-b from-green-800 to-green-900 rounded-xl overflow-hidden border-2 border-green-700">
@@ -99,48 +135,100 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
         </div>
       )}
 
-      {isFinished && homeStarting.length > 0 && (
+      {isFinished && homePlayers.length > 0 && (
         <>
-          <div className="absolute top-16 left-4 right-4 flex justify-between px-4">
-            <div className="flex flex-wrap gap-1 max-w-[45%]">
-              {homeStarting.slice(0, 4).map((player, idx) => (
-                <div key={`home-${idx}`} className="bg-blue-600/80 text-white text-[8px] px-1.5 py-0.5 rounded">
-                  {player}
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-1 max-w-[45%] justify-end">
-              {awayStarting.slice(0, 4).map((player, idx) => (
-                <div key={`away-${idx}`} className="bg-red-600/80 text-white text-[8px] px-1.5 py-0.5 rounded">
-                  {player}
-                </div>
-              ))}
-            </div>
+          <div 
+            className="absolute w-9 h-9 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center shadow-lg"
+            style={{ left: `${homeGK.x}%`, top: `${homeGK.y}%`, transform: 'translate(-50%, -50%)' }}
+            title={`${homePlayers[0]} (GK)`}
+          >
+            <span className="text-white font-bold text-xs">1</span>
           </div>
 
-          <div className="absolute top-24 left-1/2 -translate-x-1/2 flex gap-2">
-            {homeStarting.slice(4, 7).map((player, idx) => (
-              <div key={`home-mid-${idx}`} className="bg-blue-600/80 text-white text-[8px] px-1.5 py-0.5 rounded">
-                {player}
-              </div>
-            ))}
+          {homeDefenders.map((pos, idx) => (
+            <div 
+              key={`home-def-${idx}`}
+              className="absolute w-8 h-8 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center shadow-md"
+              style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
+              title={homePlayers[idx + 1]}
+            >
+              <span className="text-white font-bold text-xs">{idx + 2}</span>
+            </div>
+          ))}
+
+          {homeMidfielders.map((pos, idx) => (
+            <div 
+              key={`home-mid-${idx}`}
+              className="absolute w-8 h-8 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center shadow-md"
+              style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
+              title={homePlayers[idx + 1 + homeForm.defenders]}
+            >
+              <span className="text-white font-bold text-xs">{idx + 2 + homeForm.defenders}</span>
+            </div>
+          ))}
+
+          {homeForwards.map((pos, idx) => (
+            <div 
+              key={`home-fwd-${idx}`}
+              className="absolute w-8 h-8 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center shadow-md"
+              style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
+              title={homePlayers[idx + 1 + homeForm.defenders + homeForm.midfielders]}
+            >
+              <span className="text-white font-bold text-xs">{idx + 2 + homeForm.defenders + homeForm.midfielders}</span>
+            </div>
+          ))}
+
+          <div 
+            className="absolute w-9 h-9 rounded-full bg-red-600 border-2 border-white flex items-center justify-center shadow-lg"
+            style={{ left: `${awayGK.x}%`, top: `${awayGK.y}%`, transform: 'translate(-50%, -50%)' }}
+            title={`${awayPlayers[0]} (GK)`}
+          >
+            <span className="text-white font-bold text-xs">1</span>
           </div>
 
-          <div className="absolute bottom-20 left-4 right-4 flex justify-between px-4">
-            <div className="flex flex-wrap gap-1 max-w-[45%]">
-              {homeStarting.slice(7).map((player, idx) => (
-                <div key={`home-fwd-${idx}`} className="bg-blue-600/80 text-white text-[8px] px-1.5 py-0.5 rounded">
-                  {player}
-                </div>
-              ))}
+          {awayDefenders.map((pos, idx) => (
+            <div 
+              key={`away-def-${idx}`}
+              className="absolute w-8 h-8 rounded-full bg-red-600 border-2 border-white flex items-center justify-center shadow-md"
+              style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
+              title={awayPlayers[idx + 1]}
+            >
+              <span className="text-white font-bold text-xs">{idx + 2}</span>
             </div>
-            <div className="flex flex-wrap gap-1 max-w-[45%] justify-end">
-              {awayStarting.slice(4).map((player, idx) => (
-                <div key={`away-other-${idx}`} className="bg-red-600/80 text-white text-[8px] px-1.5 py-0.5 rounded">
-                  {player}
-                </div>
-              ))}
+          ))}
+
+          {awayMidfielders.map((pos, idx) => (
+            <div 
+              key={`away-mid-${idx}`}
+              className="absolute w-8 h-8 rounded-full bg-red-600 border-2 border-white flex items-center justify-center shadow-md"
+              style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
+              title={awayPlayers[idx + 1 + awayForm.defenders]}
+            >
+              <span className="text-white font-bold text-xs">{idx + 2 + awayForm.defenders}</span>
             </div>
+          ))}
+
+          {awayForwards.map((pos, idx) => (
+            <div 
+              key={`away-fwd-${idx}`}
+              className="absolute w-8 h-8 rounded-full bg-red-600 border-2 border-white flex items-center justify-center shadow-md"
+              style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
+              title={awayPlayers[idx + 1 + awayForm.defenders + awayForm.midfielders]}
+            >
+              <span className="text-white font-bold text-xs">{idx + 2 + awayForm.defenders + awayForm.midfielders}</span>
+            </div>
+          ))}
+
+          <div className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/60 backdrop-blur-sm rounded-lg p-2 max-w-[120px]">
+            <div className="text-xs text-gray-400 mb-1">主队阵型</div>
+            <div className="text-white font-bold text-xs">{homeFormation}</div>
+            <div className="text-xs text-blue-400 mt-1">{match.homeTeam.name}</div>
+          </div>
+
+          <div className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/60 backdrop-blur-sm rounded-lg p-2 max-w-[120px]">
+            <div className="text-xs text-gray-400 mb-1">客队阵型</div>
+            <div className="text-white font-bold text-xs">{awayFormation}</div>
+            <div className="text-xs text-red-400 mt-1">{match.awayTeam.name}</div>
           </div>
         </>
       )}
@@ -177,6 +265,21 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
                 {match.events[match.events.length - 1].minute}&apos; - {match.events[match.events.length - 1].description}
               </p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {isFinished && homePlayers.length > 0 && (
+        <div className="absolute bottom-24 left-4 right-4 flex justify-between text-xs">
+          <div className="flex flex-wrap gap-1">
+            {homePlayers.slice(0, 5).map((player, idx) => (
+              <span key={idx} className="text-blue-300/80 text-[10px] px-1">{player}</span>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-1 justify-end">
+            {awayPlayers.slice(0, 5).map((player, idx) => (
+              <span key={idx} className="text-red-300/80 text-[10px] px-1">{player}</span>
+            ))}
           </div>
         </div>
       )}
