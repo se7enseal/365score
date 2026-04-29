@@ -10,8 +10,8 @@ export default function Navbar() {
       <div className="max-w-5xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
-            <div className="h-10 w-auto bg-black rounded overflow-hidden">
-              <img src="/logo.png" alt="365比分网" className="h-full w-full object-contain" />
+            <div style={{ height: '40px', width: 'auto', backgroundColor: '#000000', borderRadius: '4px', overflow: 'hidden' }}>
+              <img src="/logo.png" alt="365比分网" style={{ height: '100%', width: '100%', objectFit: 'contain' }} />
             </div>
             <span className="text-xl font-bold text-white tracking-wide">
               365比分网
