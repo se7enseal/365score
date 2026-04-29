@@ -333,6 +333,34 @@ export default function MatchDetailContent({ match }: { match: Match }) {
         {activeTab === 'headToHead' && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">双方交锋历史</h3>
+            
+            <div className="bg-gray-50 rounded-xl p-4">
+              <div className="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <div className="text-2xl font-bold text-blue-600">
+                    {match.headToHead.filter(h => h.home === match.homeTeam ? h.homeScore > h.awayScore : h.awayScore > h.homeScore).length}
+                  </div>
+                  <div className="text-sm text-gray-500">胜</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-gray-600">
+                    {match.headToHead.filter(h => h.homeScore === h.awayScore).length}
+                  </div>
+                  <div className="text-sm text-gray-500">平</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-red-600">
+                    {match.headToHead.filter(h => h.home === match.homeTeam ? h.homeScore < h.awayScore : h.awayScore < h.homeScore).length}
+                  </div>
+                  <div className="text-sm text-gray-500">负</div>
+                </div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between text-sm text-gray-500">
+                <span>{match.homeTeam} 在最近 {match.headToHead.length} 次交锋中</span>
+                <span>共进 {match.headToHead.reduce((sum, h) => sum + (h.home === match.homeTeam ? h.homeScore : h.awayScore), 0)} 球</span>
+              </div>
+            </div>
+            
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -369,7 +397,14 @@ export default function MatchDetailContent({ match }: { match: Match }) {
         {activeTab === 'recent' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">{match.homeTeam} 近期战绩</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">{match.homeTeam} 近期战绩</h3>
+                <div className="flex items-center gap-4">
+                  <span className="text-green-600 font-bold">{match.homeRecentMatches.filter(m => m.result === 'W').length}胜</span>
+                  <span className="text-gray-600 font-bold">{match.homeRecentMatches.filter(m => m.result === 'D').length}平</span>
+                  <span className="text-red-600 font-bold">{match.homeRecentMatches.filter(m => m.result === 'L').length}负</span>
+                </div>
+              </div>
               <div className="space-y-2">
                 {match.homeRecentMatches.map((item, idx) => (
                   <div key={idx} className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
@@ -383,8 +418,8 @@ export default function MatchDetailContent({ match }: { match: Match }) {
                       </div>
                     </div>
                     <span className={`ml-4 font-bold text-lg ${
-                      item.result === 'W' ? 'text-red-600' : 
-                      item.result === 'L' ? 'text-green-600' : 
+                      item.result === 'W' ? 'text-green-600' : 
+                      item.result === 'L' ? 'text-red-600' : 
                       'text-gray-600'
                     }`}>
                       {item.result === 'W' ? '胜' : item.result === 'L' ? '负' : '平'}
@@ -394,7 +429,14 @@ export default function MatchDetailContent({ match }: { match: Match }) {
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">{match.awayTeam} 近期战绩</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">{match.awayTeam} 近期战绩</h3>
+                <div className="flex items-center gap-4">
+                  <span className="text-green-600 font-bold">{match.awayRecentMatches.filter(m => m.result === 'W').length}胜</span>
+                  <span className="text-gray-600 font-bold">{match.awayRecentMatches.filter(m => m.result === 'D').length}平</span>
+                  <span className="text-red-600 font-bold">{match.awayRecentMatches.filter(m => m.result === 'L').length}负</span>
+                </div>
+              </div>
               <div className="space-y-2">
                 {match.awayRecentMatches.map((item, idx) => (
                   <div key={idx} className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
@@ -408,8 +450,8 @@ export default function MatchDetailContent({ match }: { match: Match }) {
                       </div>
                     </div>
                     <span className={`ml-4 font-bold text-lg ${
-                      item.result === 'W' ? 'text-red-600' : 
-                      item.result === 'L' ? 'text-green-600' : 
+                      item.result === 'W' ? 'text-green-600' : 
+                      item.result === 'L' ? 'text-red-600' : 
                       'text-gray-600'
                     }`}>
                       {item.result === 'W' ? '胜' : item.result === 'L' ? '负' : '平'}
