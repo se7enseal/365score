@@ -73,7 +73,7 @@ export default function MainContent() {
 
   return (
     <main className="flex-1 space-y-6">
-      <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white h-[336px] overflow-hidden">
+      <a href={`/match/${currentMatch.id}`} className="block relative bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white h-[336px] overflow-hidden hover:from-blue-700 hover:to-purple-700 transition-all">
         <div className="flex items-center justify-between h-full">
           <div>
             <div className="text-sm opacity-80 mb-2">{currentMatch.league}</div>
@@ -94,20 +94,20 @@ export default function MainContent() {
               )}
             </div>
           </div>
-          <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+          <span className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center">
             查看详情 →
-          </button>
+          </span>
         </div>
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
           {featuredMatches.map((_, idx) => (
             <button
               key={idx}
-              onClick={() => setCurrentSlide(idx)}
+              onClick={(e) => { e.stopPropagation(); setCurrentSlide(idx); }}
               className={`w-2 h-2 rounded-full transition-all ${idx === currentSlide ? 'w-6 bg-white' : 'bg-white/50'}`}
             />
           ))}
         </div>
-      </div>
+      </a>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
@@ -121,7 +121,11 @@ export default function MainContent() {
           </div>
           <div className="space-y-3">
             {upcomingMatches.map((match) => (
-              <div key={match.id} className="bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors cursor-pointer">
+              <a
+                key={match.id}
+                href={`/match/${match.id}`}
+                className="block bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <span className="text-gray-900 font-medium">{match.home}</span>
@@ -133,7 +137,7 @@ export default function MainContent() {
                     <div className="text-gray-900 text-sm font-medium">{match.time}</div>
                   </div>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>

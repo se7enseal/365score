@@ -30,7 +30,11 @@ export default function LeftSidebar() {
         </h3>
         <div className="space-y-3">
           {hotMatches.map((match) => (
-            <div key={match.id} className="bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors cursor-pointer">
+            <a
+              key={match.id}
+              href={`/match/${match.id}`}
+              className="block bg-gray-50 rounded-lg p-3 hover:bg-gray-100 transition-colors"
+            >
               <div className="flex justify-between text-xs text-gray-500 mb-1">
                 <span>{match.league}</span>
                 <span>{match.time}</span>
@@ -40,7 +44,7 @@ export default function LeftSidebar() {
                 <span className="text-gray-400">VS</span>
                 <span className="text-gray-900 text-sm font-medium">{match.away}</span>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>

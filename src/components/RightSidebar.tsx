@@ -69,7 +69,11 @@ export default function RightSidebar() {
         </h3>
         <div className="space-y-2">
           {liveScores.map((match) => (
-            <div key={match.id} className="bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition-colors cursor-pointer">
+            <a
+              key={match.id}
+              href={`/match/${match.id}`}
+              className="block bg-gray-50 rounded-lg p-2 hover:bg-gray-100 transition-colors"
+            >
               <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
                 <span className="text-red-600 font-medium">{match.minute}</span>
               </div>
@@ -82,7 +86,7 @@ export default function RightSidebar() {
                 </div>
                 <span className="text-gray-900 text-xs font-medium">{match.away}</span>
               </div>
-            </div>
+            </a>
           ))}
         </div>
         <a href="/live" className="block w-full mt-3 text-center text-red-600 hover:text-red-700 text-xs font-medium">

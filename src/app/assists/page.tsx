@@ -1,0 +1,78 @@
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
+
+const assistsData = [
+  { rank: 1, name: '德布劳内', team: '曼城', league: '英超', assists: 18, goals: 8, games: 30 },
+  { rank: 2, name: '穆勒', team: '拜仁慕尼黑', league: '德甲', assists: 15, goals: 18, games: 31 },
+  { rank: 3, name: '萨拉赫', team: '利物浦', league: '英超', assists: 12, goals: 24, games: 33 },
+  { rank: 4, name: '姆巴佩', team: '巴黎圣日耳曼', league: '法甲', assists: 12, goals: 30, games: 28 },
+  { rank: 5, name: '萨卡', team: '阿森纳', league: '英超', assists: 14, goals: 15, games: 34 },
+  { rank: 6, name: '维尼修斯', team: '皇家马德里', league: '西甲', assists: 13, goals: 18, games: 32 },
+  { rank: 7, name: 'B费', team: '曼联', league: '英超', assists: 11, goals: 10, games: 33 },
+  { rank: 8, name: '科曼', team: '拜仁慕尼黑', league: '德甲', assists: 11, goals: 8, games: 29 },
+  { rank: 9, name: '迪马利亚', team: '尤文图斯', league: '意甲', assists: 10, goals: 6, games: 27 },
+  { rank: 10, name: '内马尔', team: '巴黎圣日耳曼', league: '法甲', assists: 10, goals: 12, games: 22 },
+];
+
+export default function AssistsPage() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-gradient-to-r from-blue-500 to-cyan-600 rounded-xl p-6 text-white mb-8">
+          <h1 className="text-3xl font-bold mb-2">🎯 助攻排行榜</h1>
+          <p className="text-sm opacity-80">本赛季欧洲五大联赛助攻排名</p>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="grid grid-cols-12 gap-4 bg-gray-50 px-6 py-4 text-sm font-semibold text-gray-500">
+            <div className="col-span-1 text-center">#</div>
+            <div className="col-span-3">球员</div>
+            <div className="col-span-2">球队</div>
+            <div className="col-span-2 text-center">联赛</div>
+            <div className="col-span-1 text-center">助攻</div>
+            <div className="col-span-1 text-center">进球</div>
+            <div className="col-span-1 text-center">场次</div>
+            <div className="col-span-1 text-center">参与</div>
+          </div>
+          
+          <div className="divide-y divide-gray-100">
+            {assistsData.map((player) => (
+              <div 
+                key={player.rank}
+                className={`grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 transition-colors ${
+                  player.rank <= 3 ? 'bg-gradient-to-r from-blue-50 to-cyan-50' : ''
+                }`}
+              >
+                <div className="col-span-1 text-center">
+                  <span className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold mx-auto ${
+                    player.rank === 1 ? 'bg-yellow-500' : 
+                    player.rank === 2 ? 'bg-gray-400' : 
+                    player.rank === 3 ? 'bg-amber-600' : 
+                    'bg-gray-300 text-gray-700'
+                  }`}>
+                    {player.rank}
+                  </span>
+                </div>
+                <div className="col-span-3 font-semibold text-gray-900">{player.name}</div>
+                <div className="col-span-2 text-gray-600">{player.team}</div>
+                <div className="col-span-2 text-center">
+                  <span className="bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded">{player.league}</span>
+                </div>
+                <div className="col-span-1 text-center font-bold text-blue-600">{player.assists}</div>
+                <div className="col-span-1 text-center text-orange-600">{player.goals}</div>
+                <div className="col-span-1 text-center text-gray-500">{player.games}</div>
+                <div className="col-span-1 text-center text-green-600 font-bold">
+                  {player.goals + player.assists}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  );
+}
