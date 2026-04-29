@@ -26,10 +26,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">S</span>
-              </div>
-              <span className="text-gray-900 font-bold text-xl">StatsUltra</span>
+              <img src="/logo.png" alt="365比分网" className="w-10 h-10 rounded-lg object-contain" />
+              <span className="text-gray-900 font-bold text-xl">365比分网</span>
             </div>
             <p className="text-gray-600 text-sm mb-4">
               专业的体育数据分析平台，提供精准的AI预测和全面的赛事数据。

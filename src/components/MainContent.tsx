@@ -1,17 +1,52 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
 export default function MainContent() {
-  const featuredMatch = {
-    id: 1,
-    homeTeam: '切尔西',
-    awayTeam: '托特纳姆热刺',
-    homeScore: 2,
-    awayScore: 1,
-    league: '英超联赛',
-    date: '2024-04-28',
-    time: '22:00',
-    status: 'FINISHED',
-    homeLogo: 'https://via.placeholder.com/48',
-    awayLogo: 'https://via.placeholder.com/48',
-  };
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const featuredMatches = [
+    {
+      id: 1,
+      homeTeam: '切尔西',
+      awayTeam: '托特纳姆热刺',
+      homeScore: 2,
+      awayScore: 1,
+      league: '英超联赛',
+      date: '2024-04-28',
+      time: '22:00',
+      status: 'FINISHED',
+    },
+    {
+      id: 2,
+      homeTeam: '曼城',
+      awayTeam: '阿森纳',
+      homeScore: 3,
+      awayScore: 2,
+      league: '英超联赛',
+      date: '2024-04-29',
+      time: '20:30',
+      status: 'LIVE',
+    },
+    {
+      id: 3,
+      homeTeam: '皇家马德里',
+      awayTeam: '巴塞罗那',
+      homeScore: 1,
+      awayScore: 1,
+      league: '西甲联赛',
+      date: '2024-04-30',
+      time: '02:00',
+      status: 'UPCOMING',
+    },
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % featuredMatches.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [featuredMatches.length]);
 
   const upcomingMatches = [
     { id: 1, home: '曼城', away: '阿森纳', time: '今天 20:30', league: '英超', status: 'UPCOMING' },
@@ -34,31 +69,43 @@ export default function MainContent() {
     { match: '皇马 vs 巴萨', prediction: '皇马胜', confidence: 72, odds: '1.75' },
   ];
 
+  const currentMatch = featuredMatches[currentSlide];
+
   return (
     <main className="flex-1 space-y-6">
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white">
-        <div className="flex items-center justify-between">
+      <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 text-white h-44 overflow-hidden">
+        <div className="flex items-center justify-between h-full">
           <div>
-            <div className="text-sm opacity-80 mb-1">{featuredMatch.league}</div>
-            <h1 className="text-2xl font-bold mb-4">{featuredMatch.homeTeam} vs {featuredMatch.awayTeam}</h1>
+            <div className="text-sm opacity-80 mb-2">{currentMatch.league}</div>
+            <h1 className="text-3xl font-bold mb-4">{currentMatch.homeTeam} vs {currentMatch.awayTeam}</h1>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                  <span className="font-bold">{featuredMatch.homeScore}</span>
-                </div>
-                <span className="text-3xl font-bold">{featuredMatch.homeScore} - {featuredMatch.awayScore}</span>
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                  <span className="font-bold">{featuredMatch.awayScore}</span>
-                </div>
+              <div className="flex items-center gap-3">
+                <span className="text-4xl font-bold">{currentMatch.homeScore}</span>
+                <span className="text-2xl"> - </span>
+                <span className="text-4xl font-bold">{currentMatch.awayScore}</span>
               </div>
-              <span className="bg-white/20 px-3 py-1 rounded-full text-sm">
-                {featuredMatch.date} {featuredMatch.time}
+              <span className="bg-white/20 px-4 py-1.5 rounded-full text-sm">
+                {currentMatch.date} {currentMatch.time}
               </span>
+              {currentMatch.status === 'LIVE' && (
+                <span className="bg-red-500 px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+                  LIVE
+                </span>
+              )}
             </div>
           </div>
           <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
             查看详情 →
           </button>
+        </div>
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+          {featuredMatches.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentSlide(idx)}
+              className={`w-2 h-2 rounded-full transition-all ${idx === currentSlide ? 'w-6 bg-white' : 'bg-white/50'}`}
+            />
+          ))}
         </div>
       </div>
 

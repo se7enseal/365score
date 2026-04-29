@@ -17,10 +17,8 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">S</span>
-            </div>
-            <span className="text-gray-900 font-bold text-xl">StatsUltra</span>
+            <img src="/logo.png" alt="365比分网" className="w-10 h-10 rounded-lg object-contain" />
+            <span className="text-gray-900 font-bold text-xl">365比分网</span>
           </div>
 
           <nav className="hidden md:flex items-center gap-8">
