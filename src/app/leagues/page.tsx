@@ -1,3 +1,5 @@
+'use client';
+
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -17,13 +19,27 @@ const leaguesData = [
 ];
 
 export default function LeaguesPage() {
+  const handleBack = () => {
+    window.history.back();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
 
       <div className="max-w-5xl mx-auto px-4 py-8">
+        <button 
+          onClick={handleBack}
+          className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          返回上一页
+        </button>
+        
         <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white mb-8">
-          <h1 className="text-3xl font-bold mb-2">🏟️ 联赛大全</h1>
+          <h1 className="text-3xl font-bold mb-2">🏟️ 联赛资料</h1>
           <p className="text-sm opacity-80">浏览所有足球联赛和杯赛</p>
         </div>
 

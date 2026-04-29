@@ -1,3 +1,5 @@
+'use client';
+
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 
@@ -11,11 +13,25 @@ const newsData = [
 ];
 
 export default function NewsPage() {
+  const handleBack = () => {
+    window.history.back();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
 
       <div className="max-w-5xl mx-auto px-4 py-8">
+        <button 
+          onClick={handleBack}
+          className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          返回上一页
+        </button>
+        
         <div className="bg-gradient-to-r from-red-600 to-orange-500 rounded-xl p-6 text-white mb-8">
           <h1 className="text-3xl font-bold mb-2">📰 足球资讯</h1>
           <p className="text-sm opacity-80">最新足球新闻和赛事报道</p>
