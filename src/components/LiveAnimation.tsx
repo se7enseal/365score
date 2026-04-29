@@ -62,25 +62,28 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
   const homeForm = parseFormation(homeFormation);
   const awayForm = parseFormation(awayFormation);
 
-  const createPlayerPositions = (count: number, baseY: number, side: 'left' | 'right') => {
+  const createVerticalPositions = (count: number, baseX: number, align: 'top' | 'bottom') => {
     const positions = [];
-    const spacing = 60 / (count + 1);
+    const spacing = count > 1 ? 40 / (count - 1) : 0;
+    const startY = align === 'top' ? 30 : 70;
+    const direction = align === 'top' ? 1 : -1;
+    
     for (let i = 0; i < count; i++) {
-      const x = side === 'left' ? 15 + spacing * (i + 1) : 85 - spacing * (i + 1);
-      positions.push({ x, y: baseY });
+      const y = startY + spacing * i * direction;
+      positions.push({ x: baseX, y });
     }
     return positions;
   };
 
-  const homeGK = { x: 18, y: 15 };
-  const homeDefenders = createPlayerPositions(homeForm.defenders, 28, 'left');
-  const homeMidfielders = createPlayerPositions(homeForm.midfielders, 50, 'left');
-  const homeForwards = createPlayerPositions(homeForm.forwards, 72, 'left');
+  const homeGK = { x: 8, y: 50 };
+  const homeDefenders = createVerticalPositions(homeForm.defenders, 20, 'top');
+  const homeMidfielders = createVerticalPositions(homeForm.midfielders, 38, 'top');
+  const homeForwards = createVerticalPositions(homeForm.forwards, 55, 'top');
 
-  const awayGK = { x: 82, y: 85 };
-  const awayDefenders = createPlayerPositions(awayForm.defenders, 72, 'right');
-  const awayMidfielders = createPlayerPositions(awayForm.midfielders, 50, 'right');
-  const awayForwards = createPlayerPositions(awayForm.forwards, 28, 'right');
+  const awayGK = { x: 92, y: 50 };
+  const awayDefenders = createVerticalPositions(awayForm.defenders, 80, 'top');
+  const awayMidfielders = createVerticalPositions(awayForm.midfielders, 62, 'top');
+  const awayForwards = createVerticalPositions(awayForm.forwards, 45, 'top');
 
   return (
     <div className="relative w-full aspect-video bg-gradient-to-b from-green-800 to-green-900 rounded-xl overflow-hidden border-2 border-green-700">
@@ -219,16 +222,14 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
             </div>
           ))}
 
-          <div className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/60 backdrop-blur-sm rounded-lg p-2 max-w-[120px]">
-            <div className="text-xs text-gray-400 mb-1">主队阵型</div>
-            <div className="text-white font-bold text-xs">{homeFormation}</div>
-            <div className="text-xs text-blue-400 mt-1">{match.homeTeam.name}</div>
+          <div className="absolute bottom-24 left-4 bg-black/60 backdrop-blur-sm rounded-lg p-2">
+            <div className="text-xs text-gray-400">主队阵型</div>
+            <div className="text-white font-bold text-sm">{homeFormation}</div>
           </div>
 
-          <div className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/60 backdrop-blur-sm rounded-lg p-2 max-w-[120px]">
-            <div className="text-xs text-gray-400 mb-1">客队阵型</div>
-            <div className="text-white font-bold text-xs">{awayFormation}</div>
-            <div className="text-xs text-red-400 mt-1">{match.awayTeam.name}</div>
+          <div className="absolute bottom-24 right-4 bg-black/60 backdrop-blur-sm rounded-lg p-2">
+            <div className="text-xs text-gray-400">客队阵型</div>
+            <div className="text-white font-bold text-sm">{awayFormation}</div>
           </div>
         </>
       )}
@@ -270,15 +271,17 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
       )}
 
       {isFinished && homePlayers.length > 0 && (
-        <div className="absolute bottom-24 left-4 right-4 flex justify-between text-xs">
-          <div className="flex flex-wrap gap-1">
+        <div className="absolute bottom-24 left-1/4 right-1/4 flex justify-between text-xs">
+          <div className="flex flex-col gap-0.5">
+            <div className="text-blue-400 font-bold text-xs">主队首发</div>
             {homePlayers.slice(0, 5).map((player, idx) => (
-              <span key={idx} className="text-blue-300/80 text-[10px] px-1">{player}</span>
+              <span key={idx} className="text-blue-300/80 text-[10px]">{player}</span>
             ))}
           </div>
-          <div className="flex flex-wrap gap-1 justify-end">
+          <div className="flex flex-col gap-0.5 items-end">
+            <div className="text-red-400 font-bold text-xs">客队首发</div>
             {awayPlayers.slice(0, 5).map((player, idx) => (
-              <span key={idx} className="text-red-300/80 text-[10px] px-1">{player}</span>
+              <span key={idx} className="text-red-300/80 text-[10px]">{player}</span>
             ))}
           </div>
         </div>
