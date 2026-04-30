@@ -209,9 +209,9 @@ export default function MatchDetailModal({ match, onClose }: MatchDetailModalPro
   };
 
   const iAvg = match.odds ? calculateAverage(match.odds.initial) : null;
-  const lAvg = match.odds ? calculateAverage(match.odds.live) : null;
+  const lAvg = match.odds && match.odds.live ? calculateAverage(match.odds.live) : null;
   const iDisp = match.odds ? calculateDispersion(match.odds.initial) : null;
-  const lDisp = match.odds ? calculateDispersion(match.odds.live) : null;
+  const lDisp = match.odds && match.odds.live ? calculateDispersion(match.odds.live) : null;
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
       {showOddsModal && currentOdds && (
@@ -597,7 +597,7 @@ export default function MatchDetailModal({ match, onClose }: MatchDetailModalPro
                     <tbody>
                       {oddsCompanies.map((company) => {
                         const initialOdds = match.odds?.initial[company];
-                        const liveOdds = match.odds?.live[company];
+                        const liveOdds = match.odds?.live?.[company];
                         if (!initialOdds || !liveOdds) return null;
                         
                         return (

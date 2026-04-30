@@ -26,12 +26,12 @@ export default function Header() {
             <span className="hidden sm:block text-gray-900 font-bold text-xl">365比分网</span>
           </a>
 
-          <nav className="hidden md:flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="text-gray-600 hover:text-blue-600 transition-colors text-sm font-medium"
+                className="text-gray-600 hover:text-primary px-3 py-2 rounded-lg hover:bg-primary-light transition-all text-sm font-medium"
               >
                 {item.label}
               </a>
@@ -42,19 +42,27 @@ export default function Header() {
             <div className="relative hidden sm:block">
               <input
                 type="text"
-                placeholder="搜索..."
+                placeholder="搜索球队/联赛..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-gray-100 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500 w-40"
+                className="bg-gray-100 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-primary w-40"
               />
               <svg className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
 
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
-              登录
-            </button>
+            <div className="flex items-center gap-2">
+              <a href="/auth" className="text-gray-600 hover:text-primary text-sm font-medium transition-colors">
+                登录/注册
+              </a>
+              <a href="/profile" className="bg-primary hover:bg-primary-hover text-white px-4 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                个人中心
+              </a>
+            </div>
 
             <button 
               className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -74,14 +82,14 @@ export default function Header() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-100">
+          <div className="md:hidden py-4 border-t border-gray-100 animate-fade-in">
             <div className="relative mb-4">
               <input
                 type="text"
                 placeholder="搜索球队/联赛..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-blue-500"
+                className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:border-primary"
               />
               <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -93,7 +101,7 @@ export default function Header() {
                   key={item.label}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors text-sm text-center"
+                  className="px-4 py-2 text-gray-700 hover:bg-primary-light hover:text-primary rounded-lg transition-colors text-sm text-center"
                 >
                   {item.label}
                 </a>

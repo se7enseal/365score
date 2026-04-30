@@ -186,7 +186,7 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
             <div 
               className="absolute w-9 h-9 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center shadow-lg"
               style={{ left: `${homeGK.x}%`, top: `${homeGK.y}%`, transform: 'translate(-50%, -50%)' }}
-              title={`${homePlayers[0]} (GK)`}
+              title={`${homePlayers[0]?.name || 'Unknown'} (GK)`}
             >
               <span className="text-white font-bold text-xs">1</span>
             </div>
@@ -196,7 +196,7 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
                 key={`home-def-${idx}`}
                 className="absolute w-8 h-8 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center shadow-md"
                 style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
-                title={homePlayers[idx + 1]}
+                title={homePlayers[idx + 1]?.name}
               >
                 <span className="text-white font-bold text-xs">{idx + 2}</span>
               </div>
@@ -207,7 +207,7 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
                 key={`home-mid-${idx}`}
                 className="absolute w-8 h-8 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center shadow-md"
                 style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
-                title={homePlayers[idx + 1 + homeForm.defenders]}
+                title={homePlayers[idx + 1 + homeForm.defenders]?.name}
               >
                 <span className="text-white font-bold text-xs">{idx + 2 + homeForm.defenders}</span>
               </div>
@@ -218,7 +218,7 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
                 key={`home-fwd-${idx}`}
                 className="absolute w-8 h-8 rounded-full bg-blue-600 border-2 border-white flex items-center justify-center shadow-md"
                 style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
-                title={homePlayers[idx + 1 + homeForm.defenders + homeForm.midfielders]}
+                title={homePlayers[idx + 1 + homeForm.defenders + homeForm.midfielders]?.name}
               >
                 <span className="text-white font-bold text-xs">{idx + 2 + homeForm.defenders + homeForm.midfielders}</span>
               </div>
@@ -227,7 +227,7 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
             <div 
               className="absolute w-9 h-9 rounded-full bg-red-600 border-2 border-white flex items-center justify-center shadow-lg"
               style={{ left: `${awayGK.x}%`, top: `${awayGK.y}%`, transform: 'translate(-50%, -50%)' }}
-              title={`${awayPlayers[0]} (GK)`}
+              title={`${awayPlayers[0]?.name || 'Unknown'} (GK)`}
             >
               <span className="text-white font-bold text-xs">1</span>
             </div>
@@ -237,7 +237,7 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
                 key={`away-def-${idx}`}
                 className="absolute w-8 h-8 rounded-full bg-red-600 border-2 border-white flex items-center justify-center shadow-md"
                 style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
-                title={awayPlayers[idx + 1]}
+                title={awayPlayers[idx + 1]?.name}
               >
                 <span className="text-white font-bold text-xs">{idx + 2}</span>
               </div>
@@ -248,7 +248,7 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
                 key={`away-mid-${idx}`}
                 className="absolute w-8 h-8 rounded-full bg-red-600 border-2 border-white flex items-center justify-center shadow-md"
                 style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
-                title={awayPlayers[idx + 1 + awayForm.defenders]}
+                title={awayPlayers[idx + 1 + awayForm.defenders]?.name}
               >
                 <span className="text-white font-bold text-xs">{idx + 2 + awayForm.defenders}</span>
               </div>
@@ -259,7 +259,7 @@ export default function LiveAnimation({ match }: LiveAnimationProps) {
                 key={`away-fwd-${idx}`}
                 className="absolute w-8 h-8 rounded-full bg-red-600 border-2 border-white flex items-center justify-center shadow-md"
                 style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: 'translate(-50%, -50%)' }}
-                title={awayPlayers[idx + 1 + awayForm.defenders + awayForm.midfielders]}
+                title={awayPlayers[idx + 1 + awayForm.defenders + awayForm.midfielders]?.name}
               >
                 <span className="text-white font-bold text-xs">{idx + 2 + awayForm.defenders + awayForm.midfielders}</span>
               </div>

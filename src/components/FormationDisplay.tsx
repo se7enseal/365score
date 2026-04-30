@@ -1,10 +1,11 @@
 'use client';
 import { useState } from 'react';
+import { Player } from '../types/football';
 
 interface Lineup {
   formation: string;
-  starting: string[];
-  substitutes: string[];
+  starting: Player[];
+  substitutes: Player[];
 }
 
 interface FormationDisplayProps {
@@ -82,7 +83,7 @@ export default function FormationDisplay({ lineup, teamName, isHome }: Formation
               <div key={idx} className="absolute -translate-x-1/2 -translate-y-1/2 hover:scale-125 transition-all z-10" style={{ top: p.t, left: getL(p.l) }}>
                 <div className={`${pColor(pk)} w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-lg border-2 border-white/30`}>{idx + 1}</div>
                 <div className="absolute top-full mt-1 left-1/2 -translate-x-1/2 whitespace-nowrap z-20">
-                  <span className="text-white text-[10px] sm:text-xs font-semibold bg-black/60 px-1.5 py-0.5 rounded">{name}</span>
+                  <span className="text-white text-[10px] sm:text-xs font-semibold bg-black/60 px-1.5 py-0.5 rounded">{name.name}</span>
                 </div>
               </div>
             );
@@ -94,7 +95,7 @@ export default function FormationDisplay({ lineup, teamName, isHome }: Formation
             {subs.map((name, idx) => (
               <div key={idx} className="flex items-center gap-3 bg-slate-700/40 px-3 py-2.5 rounded-lg">
                 <div className="bg-gray-500 w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs">{idx + 12}</div>
-                <div className="text-white text-sm font-medium">{name}</div>
+                <div className="text-white text-sm font-medium">{name.name}</div>
               </div>
             ))}
           </div>
